@@ -1,0 +1,96 @@
+import { useState } from "react";
+import { motion } from "motion/react";
+
+function Navigation() {
+  return (
+    <ul className="nav-ul flex gap-6 text-white font-medium">
+      {[
+        { name: "Home", href: "#home" },
+        { name: "About", href: "#about" },
+        { name: "Projects", href: "#projects" },
+        { name: "Experience", href: "#experience" },
+        { name: "Contact", href: "#contact" },
+      ].map((item) => (
+        <li key={item.name} className="nav-li relative group">
+          <a
+            href={item.href}
+            className="nav-link relative z-10 px-1 py-0.5 transition-colors duration-300 ease-in-out hover:text-[#00ffff]"
+          >
+            {item.name}
+          </a>
+          {/* Subtle underline animation */}
+          <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-[#7b00ff] transition-all duration-300 ease-in-out group-hover:w-full"></span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+
+const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      {/* Blackhole Video Background */}
+      <div className="blackhole-box">
+        <video
+          src="assets/blackhole.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+        />
+      </div>
+
+      {/* Navbar */}
+      <div className="fixed inset-x-0 z-20 w-full">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 backdrop-blur-lg bg-black/30 relative">
+          <div className="flex items-center justify-between py-3">
+
+            {/* Brand */}
+            <a
+              href="#home"
+              className="text-xl font-bold transition-colors text-purple-400 hover:text-white"
+            >
+              Suvradip
+            </a>
+
+            {/* Mobile Toggle Button */}
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="flex cursor-pointer text-neutral-300 hover:text-white focus:outline-none sm:hidden"
+            >
+              <img
+                src={isOpen ? "assets/close.svg" : "assets/menu.svg"}
+                className="w-6 h-6"
+                alt="toggle"
+              />
+            </button>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden sm:flex">
+              <Navigation />
+            </nav>
+          </div>
+        </div>
+
+        {/* Mobile Navigation (Animated) */}
+        {isOpen && (
+          <motion.div
+            className="block overflow-hidden text-center sm:hidden bg-black/70"
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <nav className="pb-5">
+              <Navigation />
+            </nav>
+          </motion.div>
+        )}
+      </div>
+    </>
+  );
+};
+
+export default Navbar;
