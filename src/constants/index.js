@@ -174,7 +174,7 @@ export const experiences = [
   },
   {
     title: "Academic Education",
-    job: "Sikkim Manipal Institute of Technology & Techno India",
+    job: "Master of Computer Applications (MCA) & Bachelor of Computer Applications (BCA)",
     date: "2021 - Present",
     background: "/assets/degree.png",
     contents: [

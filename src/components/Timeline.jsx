@@ -179,28 +179,44 @@ export const Timeline = ({ data }) => {
                     </p>
                   </div>
 
-                  {/* Accomplishment listing */}
-                  <div className="space-y-3">
-                    {activeItem.contents.map((content, idx) => (
-                      <motion.div
-                        key={idx}
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.05 + 0.05 }}
-                        className="flex items-start gap-3 p-3.5 rounded-lg border border-white/[0.02] bg-white/[0.01] hover:bg-white/[0.02] transition-all duration-300"
-                      >
-                        <span
-                          className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0"
-                          style={{
-                            backgroundColor: activeMeta.color,
-                            boxShadow: `0 0 8px ${activeMeta.color}`,
-                          }}
-                        />
-                        <div className="text-xs md:text-sm leading-relaxed text-neutral-300 w-full font-sans">
-                          {parseContent(content, activeMeta.color)}
+                  {/* Dynamic Marquee Listing */}
+                  <div className="relative h-[270px] overflow-hidden mt-4 rounded-xl">
+                    <style>{`
+                      @keyframes marquee-vertical {
+                        0% { transform: translateY(0); }
+                        100% { transform: translateY(-50%); }
+                      }
+                      .animate-marquee-vertical {
+                        animation: marquee-vertical 16s linear infinite;
+                      }
+                      .animate-marquee-vertical:hover {
+                        animation-play-state: paused;
+                      }
+                    `}</style>
+                    
+                    {/* Visual fading masks at top/bottom */}
+                    <div className="absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-[#0e0e0e] to-transparent z-10 pointer-events-none" />
+                    <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-[#0e0e0e] to-transparent z-10 pointer-events-none" />
+
+                    <div className="animate-marquee-vertical flex flex-col gap-3 py-4">
+                      {[...activeItem.contents, ...activeItem.contents].map((content, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-start gap-3 p-3.5 rounded-lg border border-white/[0.02] bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/[0.05] transition-all duration-300"
+                        >
+                          <span
+                            className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0"
+                            style={{
+                              backgroundColor: activeMeta.color,
+                              boxShadow: `0 0 8px ${activeMeta.color}`,
+                            }}
+                          />
+                          <div className="text-xs md:text-sm leading-relaxed text-neutral-300 w-full font-sans">
+                            {parseContent(content, activeMeta.color)}
+                          </div>
                         </div>
-                      </motion.div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </div>
               </motion.div>
