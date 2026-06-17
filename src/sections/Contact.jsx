@@ -84,16 +84,6 @@ const Contact = () => {
       id="contact"
       className="relative flex items-center c-space section-spacing overflow-hidden"
     >
-      {/* Background Video */}
-      <video
-        src="/assets/cont-bg.mp4"
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover -z-50"
-      />
-
       {/* Particles */}
       {particles}
 
@@ -103,7 +93,7 @@ const Contact = () => {
       {/* Contact Card */}
       <div className="flex flex-col items-center justify-center max-w-md p-5 mx-auto border border-white/10 rounded-2xl bg-primary/5 backdrop-blur-lg">
         <div className="flex flex-col items-start w-full gap-5 mb-10">
-          <h2 className="text-heading drop-shadow-[0_0_12px_rgba(255,255,255,0.8)]">
+          <h2 className="text-heading drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]">
             Let&apos;s Talk
           </h2>
           <p className="font-normal text-purple-300">

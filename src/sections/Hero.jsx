@@ -4,13 +4,21 @@ import { Astronaut } from "../components/Astronaut";
 import { Float } from "@react-three/drei";
 import { useMediaQuery } from "react-responsive";
 import { easing } from "maath";
-import { Suspense, useMemo } from "react";
+import { Suspense, useMemo, useState, useEffect } from "react";
 import Loader from "../components/Loader";
 
 const Hero = () => {
   const isMobile = useMediaQuery({ maxWidth: 853 });
+  const [showCanvas, setShowCanvas] = useState(!isMobile);
 
-  // Freeze astronaut props to avoid re-renders
+  //  Delay loading 3D Canvas on mobile (to prevent lag during first paint)
+  useEffect(() => {
+    if (isMobile) {
+      const timer = setTimeout(() => setShowCanvas(true), 500); // load after 0.5s
+      return () => clearTimeout(timer);
+    }
+  }, [isMobile]);
+
   const astronautProps = useMemo(
     () => ({
       scale: isMobile ? 0.23 : undefined,
@@ -34,32 +42,34 @@ const Hero = () => {
         className="absolute inset-0 w-full h-full object-cover -z-50"
       />
 
-      {/* Optional overlay for readability */}
+      {/* Overlay for contrast */}
       <div className="absolute inset-0 bg-black/40 -z-40" />
 
       {/* Hero text */}
       <HeroText />
 
-      {/* 3D astronaut */}
-      <figure
-        className="absolute inset-0"
-        style={{ width: "100vw", height: "100vh" }}
-      >
-        <Canvas
-          camera={{ position: [0, 1, 3] }}
-          gl={{
-            antialias: true,
-            powerPreference: "high-performance",
-          }}
+      {/* Load 3D astronaut only when ready */}
+      {showCanvas && (
+        <figure
+          className="absolute inset-0"
+          style={{ width: "100vw", height: "100vh" }}
         >
-          <Suspense fallback={<Loader />}>
-            <Float>
-              <Astronaut {...astronautProps} />
-            </Float>
-            <Rig />
-          </Suspense>
-        </Canvas>
-      </figure>
+          <Canvas
+            camera={{ position: [0, 1, 3] }}
+            gl={{
+              antialias: true,
+              powerPreference: "high-performance",
+            }}
+          >
+            <Suspense fallback={<Loader />}>
+              <Float speed={isMobile ? 0.5 : 1}> {/* slower animation on mobile */}
+                <Astronaut {...astronautProps} />
+              </Float>
+              {!isMobile && <Rig />} {/*  disable camera movement on mobile */}
+            </Suspense>
+          </Canvas>
+        </figure>
+      )}
     </section>
   );
 };

@@ -21,7 +21,7 @@ const HeroText = () => {
           animate="visible"
           transition={{ delay: 1 }}
         >
-          Hi I'm <span className="text-white drop-shadow-[0_0_8px_white]">Suvradip</span>
+          Hi I'm <span className="text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.5)]">Suvradip</span>
         </motion.h1>
 
         <div className="flex flex-col items-start">
@@ -69,7 +69,7 @@ const HeroText = () => {
           animate="visible"
           transition={{ delay: 1 }}
         >
-          Hi, I'm <span className="text-white drop-shadow-[0_0_8px_white]">Suvradip</span>
+          Hi, I'm <span className="text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.5)]">Suvradip</span>
         </motion.p>
         <div>
           <motion.p

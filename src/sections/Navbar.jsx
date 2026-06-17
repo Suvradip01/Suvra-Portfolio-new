@@ -1,31 +1,35 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "motion/react";
 
 function Navigation() {
+  //  Memoize nav items so they don't recreate on every render
+  const navItems = useMemo(
+    () => [
+      { name: "Home", href: "#home" },
+      { name: "About", href: "#about" },
+      { name: "Projects", href: "#projects" },
+      { name: "Experience", href: "#experience" },
+      { name: "Contact", href: "#contact" },
+    ],
+    []
+  );
+
   return (
     <ul className="nav-ul flex gap-6 text-white font-medium">
-      {[
-        { name: "Home", href: "#home" },
-        { name: "About", href: "#about" },
-        { name: "Projects", href: "#projects" },
-        { name: "Experience", href: "#experience" },
-        { name: "Contact", href: "#contact" },
-      ].map((item) => (
+      {navItems.map((item) => (
         <li key={item.name} className="nav-li relative group">
           <a
             href={item.href}
-            className="nav-link relative z-10 px-1 py-0.5 transition-colors duration-300 ease-in-out hover:text-[#00ffff]"
+            className="nav-link relative z-10 px-1 py-0.5 transition-colors duration-200 ease-in-out hover:text-[#00ffff]"
           >
             {item.name}
           </a>
-          {/* Subtle underline animation */}
           <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-[#7b00ff] transition-all duration-300 ease-in-out group-hover:w-full"></span>
         </li>
       ))}
     </ul>
   );
 }
-
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,6 +44,8 @@ const Navbar = () => {
           loop
           muted
           playsInline
+          preload="metadata" //  Loads faster, avoids blocking
+          className="pointer-events-none select-none" //  Avoid accidental touches causing lag
         />
       </div>
 
@@ -58,13 +64,14 @@ const Navbar = () => {
 
             {/* Mobile Toggle Button */}
             <button
-              onClick={() => setIsOpen(!isOpen)}
+              onClick={() => setIsOpen((prev) => !prev)}
               className="flex cursor-pointer text-neutral-300 hover:text-white focus:outline-none sm:hidden"
             >
               <img
                 src={isOpen ? "assets/close.svg" : "assets/menu.svg"}
                 className="w-6 h-6"
                 alt="toggle"
+                loading="lazy"
               />
             </button>
 
@@ -75,13 +82,14 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation (Animated) */}
+        {/* Mobile Navigation (Optimized Animation) */}
         {isOpen && (
           <motion.div
             className="block overflow-hidden text-center sm:hidden bg-black/70"
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.25, ease: "easeOut" }} // Shorter animation = smoother feel
           >
             <nav className="pb-5">
               <Navigation />

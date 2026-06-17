@@ -1,65 +1,79 @@
 import { memo } from "react";
 import { OrbitingCircles } from "./OrbitingCircles";
 
-// Skills array stays outside for stable reference
-const SKILLS = [
-  "c",
-  "python",
-  "java",
-  "csharp",
-  "dart",
+// Skills array grouped by tier for logical distribution
+const OUTER_SKILLS = [
   "javascript",
   "html5",
   "css3",
   "react",
-  "dotnet",
-  "flutter",
   "tailwindcss",
   "vitejs",
-  "nodejs",
-  "git",
-  "github",
-  "mysql",
-  "cisco",
-  "microsoft",
-  "linux",
   "canva",
   "visualstudiocode",
+  "flutter",
+  "dart",
+];
+
+const MIDDLE_SKILLS = [
+  "nodejs",
+  "expressjs",
+  "fastapi",
+  "mysql",
+  "mongodb",
+  "docker",
+  "git",
+  "github",
+  "linux",
+  "dotnet",
+];
+
+const INNER_SKILLS = [
+  "python",
+  "java",
+  "c",
+  "pytorch",
+  "tensorflow",
+  "scikitlearn",
+  "opencv",
+  "csharp",
 ];
 
 export function Frameworks() {
-  const baseDuration = 10;
-  const outerDuration = baseDuration + Math.ceil(SKILLS.length / 3);
-  const innerDuration = baseDuration + Math.ceil(SKILLS.length / 4);
-
   return (
-    <div className="relative flex h-[15rem] w-full flex-col items-center justify-center">
-      {/* Outer Orbit */}
-      <OrbitingCircles iconSize={40} duration={outerDuration}>
-        {SKILLS.map((skill, index) => (
+    <div className="relative flex h-[18rem] w-full flex-col items-center justify-center">
+      {/* Outer Orbit — radius 155, duration reduced to 24s for faster speed */}
+      <OrbitingCircles iconSize={36} radius={155} duration={24}>
+        {OUTER_SKILLS.map((skill, index) => (
           <Icon
-            key={`${skill}-${index}`}
+            key={`${skill}-outer-${index}`}
             src={`/assets/logos/${skill}.svg`}
             alt={`${skill} logo`}
-            size={40}
+            size={36}
           />
         ))}
       </OrbitingCircles>
 
-      {/* Inner Orbit */}
-      <OrbitingCircles
-        iconSize={25}
-        radius={100}
-        reverse
-        speed={2}
-        duration={innerDuration}
-      >
-        {[...SKILLS].reverse().map((skill, index) => (
+      {/* Middle Orbit — radius 105, duration reduced to 18s for faster speed, reverse */}
+      <OrbitingCircles iconSize={30} radius={105} duration={18} reverse>
+        {MIDDLE_SKILLS.map((skill, index) => (
+          <Icon
+            key={`${skill}-mid-${index}`}
+            src={`/assets/logos/${skill}.svg`}
+            alt={`${skill} logo`}
+            size={30}
+          />
+        ))}
+      </OrbitingCircles>
+
+      {/* Inner Orbit — radius 55, duration reduced to 12s for faster speed */}
+      <OrbitingCircles iconSize={24} radius={55} duration={12}>
+        {INNER_SKILLS.map((skill, index) => (
           <Icon
             key={`${skill}-inner-${index}`}
             src={`/assets/logos/${skill}.svg`}
             alt={`${skill} logo`}
-            size={25}
+            size={24}
           />
         ))}
       </OrbitingCircles>
@@ -82,3 +96,4 @@ const Icon = memo(({ src, alt, size = 40 }) => (
     }}
   />
 ));
+

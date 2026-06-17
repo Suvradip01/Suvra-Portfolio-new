@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 const ScrollReveal = ({ children, className = "" }) => {
   const [isVisible, setIsVisible] = useState(false);
   const elementRef = useRef(null);
+  const hasRevealed = useRef(false); //  Prevent redundant state updates
 
   useEffect(() => {
     const currentElement = elementRef.current;
@@ -10,20 +11,25 @@ const ScrollReveal = ({ children, className = "" }) => {
 
     const observer = new IntersectionObserver(
       ([entry], obs) => {
-        if (entry.isIntersecting) {
-          // Use rAF for smoother state update batching
+        if (entry.isIntersecting && !hasRevealed.current) {
+          hasRevealed.current = true;
+          //  RequestAnimationFrame ensures smooth paint
           requestAnimationFrame(() => setIsVisible(true));
           obs.unobserve(entry.target); // reveal only once
         }
       },
       {
         root: null,
-        rootMargin: "0px 0px -10% 0px",
-        threshold: 0.1,
+        rootMargin: "0px 0px -5% 0px", //  Reveal a bit earlier for smoother effect
+        threshold: 0.05, //  Lower threshold = less work on mobile
       }
     );
 
     observer.observe(currentElement);
+
+    return () => {
+      observer.disconnect(); //  Proper cleanup
+    };
   }, []);
 
   const initialStyles = "opacity-0 translate-y-6 scale-[0.97]";
@@ -34,9 +40,8 @@ const ScrollReveal = ({ children, className = "" }) => {
   return (
     <div
       ref={elementRef}
-      className={`${className} ${transitionStyles} ${
-        isVisible ? finalStyles : initialStyles
-      }`}
+      className={`${className} ${transitionStyles} ${isVisible ? finalStyles : initialStyles
+        }`}
     >
       {children}
     </div>
