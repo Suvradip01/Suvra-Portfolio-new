@@ -10,7 +10,7 @@ export const myProjects = [
       "Optimized multi-resume inference latency by 51.1% (6.62s to 3.24s) by designing a FastAPI pipeline with lazy loaded singleton orchestration and in-memory cached model instances serving 4-dimensional ATS scores.",
       "Reduced client-to-backend API calls by 40% via shared-JD batch screening and deployed the system as a production full-stack application with Clerk authentication on Hugging Face Spaces."
     ],
-    href: "https://github.com/Suvradip01",
+    href: "https://ai-resume-analyzer-ats-six.vercel.app/",
     liveHref: "",
     images: [
       "/assets/projects/insightATS/2026-06-16 16 44 57.png",
@@ -24,7 +24,7 @@ export const myProjects = [
       { id: 1, name: "React.js", path: "/assets/logos/react.svg" },
       { id: 2, name: "FastAPI", path: "/assets/logos/fastapi.svg" },
       { id: 3, name: "PyTorch", path: "/assets/logos/pytorch.svg" },
-      { id: 4, name: "BERT", path: "/assets/logos/python.svg" },
+      { id: 4, name: "Python", path: "/assets/logos/python.svg" },
     ],
   },
   {
@@ -38,7 +38,7 @@ export const myProjects = [
       "Integrated Groq-hosted Llama-3.3-70B for AI-assisted code reviews, debugging, Mermaid flowchart generation, and code analysis with 1–3 second response latency.",
       "Implemented SHA-256 response caching, a 20 requests/minute rate limit, and a Redis-backed rate limiter with in-memory failover; deployed the platform and execution runner on Render."
     ],
-    href: "https://github.com/Suvradip01",
+    href: "https://code-nest-swart.vercel.app/",
     liveHref: "",
     images: [
       "/assets/projects/Codenest/2026-06-16 16 59 56.png",
@@ -64,7 +64,7 @@ export const myProjects = [
       "Fine-tuned EfficientNetB3 using transfer learning, Focal Loss, Adam optimization, and Test-Time Augmentation.",
       "Achieved 90% test accuracy with F1-scores of 0.89 (benign), 0.86 (melanoma), and 0.94 (non-melanoma), and evaluated performance using confusion matrices and per-class precision/recall analysis."
     ],
-    href: "https://github.com/Suvradip01",
+    href: "https://www.kaggle.com/code/suvradipghosh/skindiseasedetection-using-cnn",
     liveHref: "",
     images: [
       "/assets/projects/Skindiseasedetectioncnn/2026-06-16 17 23 55.png",
@@ -89,7 +89,7 @@ export const myProjects = [
       "Includes secure login via Clerk, project limits based on subscription level, and a dark comfortable interface.",
       "Built with Next.js, React, Convex, Clerk, and ImageKit for reliable performance and straightforward editing."
     ],
-    href: "https://github.com/Suvradip01",
+    href: "https://luminist-s.vercel.app/",
     liveHref: "",
     images: [
       "/assets/projects/Luminist/2026-06-16 17 18 09.png",
@@ -114,7 +114,7 @@ export const myProjects = [
       "Used stratified sampling to split dataset into 70% train, 15% validation, and 15% test sets.",
       "Achieved 92% overall test accuracy, 97% recall for interference detection, and 91% Macro F1-Score."
     ],
-    href: "https://github.com/Suvradip01",
+    href: "https://www.kaggle.com/code/suvradipghosh/merittracknotebookv1",
     liveHref: "",
     images: [
       "/assets/projects/proj5/2026-06-16 17 25 30.png",

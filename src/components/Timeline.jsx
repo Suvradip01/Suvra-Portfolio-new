@@ -187,7 +187,7 @@ export const Timeline = ({ data }) => {
                         100% { transform: translateY(-50%); }
                       }
                       .animate-marquee-vertical {
-                        animation: marquee-vertical 16s linear infinite;
+                        animation: marquee-vertical 8s linear infinite;
                       }
                       .animate-marquee-vertical:hover {
                         animation-play-state: paused;
@@ -198,7 +198,7 @@ export const Timeline = ({ data }) => {
                     <div className="absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-[#0e0e0e] to-transparent z-10 pointer-events-none" />
                     <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-[#0e0e0e] to-transparent z-10 pointer-events-none" />
 
-                    <div className="animate-marquee-vertical flex flex-col gap-3 py-4">
+                    <div className="animate-marquee-vertical flex flex-col gap-3">
                       {[...activeItem.contents, ...activeItem.contents].map((content, idx) => (
                         <div
                           key={idx}
@@ -216,6 +216,8 @@ export const Timeline = ({ data }) => {
                           </div>
                         </div>
                       ))}
+                      {/* Mathematical spacer matching gap-3 to eliminate looping jump */}
+                      <div className="h-3 flex-shrink-0" />
                     </div>
                   </div>
                 </div>

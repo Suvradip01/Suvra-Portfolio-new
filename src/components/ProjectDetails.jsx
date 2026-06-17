@@ -139,19 +139,37 @@ const ProjectDetails = ({
               </p>
 
               <h4 className="text-xs uppercase tracking-wider text-neutral-500 font-semibold mb-2">Key Highlights</h4>
-              <div className="space-y-2.5">
-                {subDescription.map((subDesc, index) => (
-                  <motion.div 
-                    key={index} 
-                    className="flex items-start gap-3 text-xs md:text-sm text-neutral-400 hover:text-neutral-300 transition-colors duration-300"
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.08 }}
-                  >
-                    <span className="mt-1.5 flex-shrink-0 w-1.5 h-1.5 rounded-full bg-purple-500 shadow-[0_0_8px_#a855f7]" />
-                    <p className="leading-relaxed font-light">{subDesc}</p>
-                  </motion.div>
-                ))}
+              <div className="relative h-[180px] overflow-hidden rounded-xl bg-black/10">
+                <style>{`
+                  @keyframes marquee-vertical {
+                    0% { transform: translateY(0); }
+                    100% { transform: translateY(-50%); }
+                  }
+                  .animate-marquee-vertical-projects {
+                    animation: marquee-vertical 24s linear infinite;
+                  }
+                  .animate-marquee-vertical-projects:hover {
+                    animation-play-state: paused;
+                  }
+                `}</style>
+                
+                {/* Visual fading masks at top/bottom */}
+                <div className="absolute inset-x-0 top-0 h-6 bg-gradient-to-b from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
+                <div className="absolute inset-x-0 bottom-0 h-6 bg-gradient-to-t from-[#040406] to-transparent z-10 pointer-events-none" />
+
+                <div className="animate-marquee-vertical-projects flex flex-col gap-2.5 py-2">
+                  {[...subDescription, ...subDescription].map((subDesc, index) => (
+                    <div 
+                      key={index} 
+                      className="flex items-start gap-3 text-xs md:text-sm text-neutral-400 hover:text-white transition-colors duration-300 p-2.5 border border-white/[0.01] bg-white/[0.005] rounded-lg"
+                    >
+                      <span className="mt-1.5 flex-shrink-0 w-1.5 h-1.5 rounded-full bg-purple-500 shadow-[0_0_8px_#a855f7]" />
+                      <p className="leading-relaxed font-light">{subDesc}</p>
+                    </div>
+                  ))}
+                  {/* Mathematical spacer matching gap-2.5 to eliminate looping jump */}
+                  <div className="h-2.5 flex-shrink-0" />
+                </div>
               </div>
             </div>
 
@@ -175,7 +193,7 @@ const ProjectDetails = ({
                 rel="noopener noreferrer"
                 className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 font-semibold text-sm rounded-2xl bg-purple-600 text-white hover:bg-purple-500 transition-all duration-300 shadow-xl shadow-purple-600/10 hover:translate-y-[-2px] cursor-pointer"
               >
-                <span>View Source Repository</span>
+                <span>{href.includes("kaggle.com") ? "View Kaggle Notebook" : href.includes("github.com") ? "View Source Repository" : "View Live Project"}</span>
                 <img src="/assets/arrow-up.svg" className="w-3.5 h-3.5 invert" alt="arrow" />
               </a>
             </div>
