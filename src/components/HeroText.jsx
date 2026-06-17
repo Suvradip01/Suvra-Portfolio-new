@@ -58,6 +58,22 @@ const HeroText = () => {
           >
             Applications
           </motion.p>
+          
+          <motion.div
+            variants={variants}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 2.0 }}
+            className="mt-8"
+          >
+            <a
+              href="/assets/resume.pdf"
+              download="Suvradip_Resume.pdf"
+              className="relative inline-flex items-center justify-center px-7 py-3 text-sm font-bold text-white transition-all duration-300 bg-transparent border border-white/80 rounded-full cursor-pointer hover:bg-white hover:text-black hover:shadow-[0_0_25px_rgba(255,255,255,0.85)] active:scale-95"
+            >
+              Download Resume
+            </a>
+          </motion.div>
         </div>
       </div>
       {/* Mobile View */}
@@ -101,6 +117,22 @@ const HeroText = () => {
           >
             Applications
           </motion.p>
+          
+          <motion.div
+            variants={variants}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 2.0 }}
+            className="mt-6 flex justify-center"
+          >
+            <a
+              href="/assets/resume.pdf"
+              download="Suvradip_Resume.pdf"
+              className="relative inline-flex items-center justify-center px-7 py-3 text-sm font-bold text-white transition-all duration-300 bg-transparent border border-white/80 rounded-full cursor-pointer hover:bg-white hover:text-black hover:shadow-[0_0_25px_rgba(255,255,255,0.85)] active:scale-95"
+            >
+              Download Resume
+            </a>
+          </motion.div>
         </div>
       </div>
     </div>
