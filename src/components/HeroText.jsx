@@ -69,7 +69,7 @@ const HeroText = () => {
             <a
               href="/assets/resume.pdf"
               download="Suvradip_Resume.pdf"
-              className="relative inline-flex items-center justify-center px-7 py-3 text-sm font-bold text-white transition-all duration-300 bg-transparent border border-white/80 rounded-full cursor-pointer hover:bg-white hover:text-black hover:shadow-[0_0_25px_rgba(255,255,255,0.85)] active:scale-95"
+              className="relative inline-flex items-center justify-center px-7 py-3 text-sm font-bold text-black transition-all duration-300 bg-white border border-white rounded-full cursor-pointer shadow-[0_0_25px_rgba(255,255,255,0.7)] hover:bg-transparent hover:text-white hover:shadow-[0_0_15px_rgba(255,255,255,0.4)] active:scale-95"
             >
               Download Resume
             </a>
@@ -128,7 +128,7 @@ const HeroText = () => {
             <a
               href="/assets/resume.pdf"
               download="Suvradip_Resume.pdf"
-              className="relative inline-flex items-center justify-center px-7 py-3 text-sm font-bold text-white transition-all duration-300 bg-transparent border border-white/80 rounded-full cursor-pointer hover:bg-white hover:text-black hover:shadow-[0_0_25px_rgba(255,255,255,0.85)] active:scale-95"
+              className="relative inline-flex items-center justify-center px-7 py-3 text-sm font-bold text-black transition-all duration-300 bg-white border border-white rounded-full cursor-pointer shadow-[0_0_25px_rgba(255,255,255,0.7)] hover:bg-transparent hover:text-white hover:shadow-[0_0_15px_rgba(255,255,255,0.4)] active:scale-95"
             >
               Download Resume
             </a>
