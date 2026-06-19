@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { stopScroll, startScroll } from "../hooks/useLenis";
 
 const ProjectDetails = ({
   title,
@@ -12,6 +13,22 @@ const ProjectDetails = ({
 }) => {
   const [currentImgIdx, setCurrentImgIdx] = useState(0);
   const hasMultipleImages = images && images.length > 1;
+
+  // Lock scroll when modal is open, unlock when closed
+  useEffect(() => {
+    const originalOverflowBody = document.body.style.overflow;
+    const originalOverflowHtml = document.documentElement.style.overflow;
+    
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    stopScroll();
+
+    return () => {
+      document.body.style.overflow = originalOverflowBody;
+      document.documentElement.style.overflow = originalOverflowHtml;
+      startScroll();
+    };
+  }, []);
 
   // Auto-slideshow inside the modal — cycles every 4 seconds
   useEffect(() => {
@@ -31,6 +48,7 @@ const ProjectDetails = ({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [closeModal]);
+
 
   return (
     <motion.div 

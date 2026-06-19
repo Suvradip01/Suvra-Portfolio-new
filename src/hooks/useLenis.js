@@ -5,28 +5,19 @@ let lenisInstance = null;
 
 export const useLenis = () => {
   useEffect(() => {
-    // Create Lenis instance with smooth, bouncy settings
+    // Create Lenis instance with premium smooth lerp configuration
     const lenis = new Lenis({
-      duration: 1.4,           // scroll animation duration in seconds
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // expo easing for smooth+bouncy feel
+      lerp: 0.08,              // Linear interpolation (lower = smoother glide, 0.08 is perfect for premium feel)
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
       wheelMultiplier: 1.0,
-      touchMultiplier: 2.0,
+      touchMultiplier: 1.5,
       infinite: false,
-      autoRaf: false,          // we drive the RAF loop manually
+      autoRaf: true,           // Let Lenis natively run its optimized RAF loop for high refresh rates (120Hz/144Hz)
     });
 
     lenisInstance = lenis;
-
-    // RAF loop
-    let animFrame;
-    const raf = (time) => {
-      lenis.raf(time);
-      animFrame = requestAnimationFrame(raf);
-    };
-    animFrame = requestAnimationFrame(raf);
 
     // Make lenis scroll targets work for anchor links
     const handleAnchorClick = (e) => {
@@ -42,7 +33,6 @@ export const useLenis = () => {
     document.addEventListener("click", handleAnchorClick);
 
     return () => {
-      cancelAnimationFrame(animFrame);
       document.removeEventListener("click", handleAnchorClick);
       lenis.destroy();
       lenisInstance = null;
@@ -54,3 +44,13 @@ export const useLenis = () => {
 export const scrollTo = (target, options) => {
   if (lenisInstance) lenisInstance.scrollTo(target, options);
 };
+
+// Utilities to disable/enable scrolling
+export const stopScroll = () => {
+  if (lenisInstance) lenisInstance.stop();
+};
+
+export const startScroll = () => {
+  if (lenisInstance) lenisInstance.start();
+};
+

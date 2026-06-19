@@ -1,12 +1,12 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import Navbar from "./sections/Navbar";
 import Hero from "./sections/Hero";
-import About from "./sections/About";
 
-import Projects from "./sections/Projects";
-import Experiences from "./sections/Experiences";
-import Contact from "./sections/Contact";
-import Footer from "./sections/Footer";
+const About = lazy(() => import("./sections/About"));
+const Projects = lazy(() => import("./sections/Projects"));
+const Experiences = lazy(() => import("./sections/Experiences"));
+const Contact = lazy(() => import("./sections/Contact"));
+const Footer = lazy(() => import("./sections/Footer"));
 import { useLenis } from "./hooks/useLenis";
 
 const App = () => {
@@ -16,13 +16,13 @@ const App = () => {
     <div className="container mx-auto max-w-7xl">
       <Navbar />
       <Hero />
-      <About />
-
-      <Projects/>
-      <Experiences />
-
-      <Contact />
-      <Footer />
+      <Suspense fallback={null}>
+        <About />
+        <Projects/>
+        <Experiences />
+        <Contact />
+        <Footer />
+      </Suspense>
     </div>
   );
 };

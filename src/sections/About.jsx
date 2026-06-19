@@ -63,7 +63,7 @@ const About = () => {
               src="assets/coding-pov.png"
               loading="lazy"
               decoding="async"
-              fetchpriority="low"
+              fetchPriority="low"
               className="absolute inset-0 w-full h-full object-cover scale-[1.3] md:scale-[1.6] lg:scale-[1.7] animate-float transform-gpu will-change-transform"
             />
             <div className="z-10 animate-slideUp transform-gpu will-change-transform">
@@ -176,7 +176,7 @@ const About = () => {
               src="assets/tech.png"
               loading="lazy"
               decoding="async"
-              fetchpriority="low"
+              fetchPriority="low"
               className="absolute inset-0 w-full h-full object-cover scale-[1.1] md:scale-[1.3] lg:scale-[1.4] animate-float transform-gpu -z-10 opacity-55"
             />
             <div className="z-10 w-[50%] animate-slideUp transform-gpu will-change-transform">

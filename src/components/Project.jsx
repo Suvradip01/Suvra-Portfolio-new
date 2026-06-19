@@ -104,6 +104,7 @@ const Project = ({
               <img
                 src={(images && images[0]) || "/assets/projects/project1.png"}
                 alt={`${title} cover screenshot`}
+                loading="lazy"
                 className="max-w-full max-h-full object-contain rounded-lg transition-transform duration-700 ease-out group-hover:scale-[1.04]"
               />
 
@@ -136,7 +137,7 @@ const Project = ({
                   key={tag.id}
                   className="flex items-center gap-1.5 px-3 py-1 text-[11px] font-medium text-neutral-300 bg-white/5 border border-white/5 rounded-full hover:border-white/20 hover:bg-white/10 transition-all duration-300"
                 >
-                  {tag.path && <img src={tag.path} alt={tag.name} className="w-4 h-4" />}
+                  {tag.path && <img src={tag.path} alt={tag.name} loading="lazy" className="w-4 h-4" />}
                   <span>{tag.name}</span>
                 </div>
               ))}
