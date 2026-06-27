@@ -178,7 +178,7 @@ export const experiences = [
     date: "2021 - Present",
     background: "/assets/degree.png",
     contents: [
-      "Master of Computer Applications (2024 – Present) | Sikkim Manipal Institute of Technology — CGPA: 8.16",
+      "Master of Computer Applications (2024 – Present) | Sikkim Manipal Institute of Technology — CGPA: 8.25",
       "Bachelor of Computer Applications (2021 – 2024) | Techno India University — CGPA: 8.39",
       "Higher Secondary (Class XII) (2021) | Maynaguri High School — Percentage: 88.6%",
     ],
