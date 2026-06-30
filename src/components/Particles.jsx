@@ -1,19 +1,13 @@
 import { twMerge } from "tailwind-merge";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 
-function MousePosition() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+// Detect touch devices once at module level
+const isTouchDevice =
+  typeof window !== "undefined" &&
+  ("ontouchstart" in window || navigator.maxTouchPoints > 0);
 
-  useEffect(() => {
-    const handleMouseMove = (event) => {
-      setMousePosition({ x: event.clientX, y: event.clientY });
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
-  return mousePosition;
-}
+// Reduce particles on mobile for better performance
+const DEFAULT_QUANTITY_MOBILE = 40;
 
 function hexToRgb(hex) {
   hex = hex.replace("#", "");
@@ -40,12 +34,17 @@ export const Particles = ({
   const canvasContainerRef = useRef(null);
   const context = useRef(null);
   const circles = useRef([]);
-  const mousePosition = MousePosition();
+  // Use ref instead of state — avoids re-renders on every mousemove
+  const rawMouse = useRef({ x: 0, y: 0 });
   const mouse = useRef({ x: 0, y: 0 });
+  const mousePending = useRef(false);
   const canvasSize = useRef({ w: 0, h: 0 });
-  const dpr = typeof window !== "undefined" ? window.devicePixelRatio : 1;
+  // Cap DPR at 2 to avoid extreme GPU load on high-DPR screens
+  const dpr = typeof window !== "undefined" ? Math.min(window.devicePixelRatio, 2) : 1;
   const rafID = useRef(null);
   const resizeTimeout = useRef(null);
+  // Reduce particles on mobile
+  const resolvedQuantity = isTouchDevice ? Math.min(quantity, DEFAULT_QUANTITY_MOBILE) : quantity;
 
   const rgb = hexToRgb(color);
 
@@ -62,16 +61,28 @@ export const Particles = ({
     };
     window.addEventListener("resize", handleResize);
 
+    // Track raw mouse coords via ref — no setState, no re-renders
+    const handleMouseMove = (e) => {
+      rawMouse.current = { x: e.clientX, y: e.clientY };
+      if (!mousePending.current) {
+        mousePending.current = true;
+        requestAnimationFrame(() => {
+          onMouseMove();
+          mousePending.current = false;
+        });
+      }
+    };
+    if (!isTouchDevice) {
+      window.addEventListener("mousemove", handleMouseMove);
+    }
+
     return () => {
       if (rafID.current) cancelAnimationFrame(rafID.current);
       if (resizeTimeout.current) clearTimeout(resizeTimeout.current);
       window.removeEventListener("resize", handleResize);
+      if (!isTouchDevice) window.removeEventListener("mousemove", handleMouseMove);
     };
   }, [color]);
-
-  useEffect(() => {
-    onMouseMove();
-  }, [mousePosition.x, mousePosition.y]);
 
   useEffect(() => {
     initCanvas();
@@ -86,8 +97,8 @@ export const Particles = ({
     if (canvasRef.current) {
       const rect = canvasRef.current.getBoundingClientRect();
       const { w, h } = canvasSize.current;
-      const x = mousePosition.x - rect.left - w / 2;
-      const y = mousePosition.y - rect.top - h / 2;
+      const x = rawMouse.current.x - rect.left - w / 2;
+      const y = rawMouse.current.y - rect.top - h / 2;
       const inside = x < w / 2 && x > -w / 2 && y < h / 2 && y > -h / 2;
       if (inside) {
         mouse.current.x = x;
@@ -107,7 +118,7 @@ export const Particles = ({
       context.current.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       circles.current = [];
-      for (let i = 0; i < quantity; i++) {
+      for (let i = 0; i < resolvedQuantity; i++) {
         const circle = circleParams();
         drawCircle(circle);
       }
@@ -152,7 +163,7 @@ export const Particles = ({
 
   const drawParticles = () => {
     clearContext();
-    for (let i = 0; i < quantity; i++) {
+    for (let i = 0; i < resolvedQuantity; i++) {
       const circle = circleParams();
       drawCircle(circle);
     }

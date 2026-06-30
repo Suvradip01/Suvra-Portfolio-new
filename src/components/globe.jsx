@@ -6,15 +6,15 @@ import { useEffect, useRef } from "react";
 
 import { twMerge } from "tailwind-merge";
 
-const MOVEMENT_DAMPING = 1400;
+const MOVEMENT_DAMPING = 500;
 
 const GLOBE_CONFIG = {
   width: 800,
   height: 800,
-  onRender: () => {},
-  devicePixelRatio: 2,
+  onRender: () => { },
+  devicePixelRatio: typeof window !== "undefined" ? Math.min(window.devicePixelRatio, 1.8) : 1,
   phi: 0,
-  theta: 0.3,
+  theta: 0.15,
   dark: 1,
   diffuse: 0.4,
   mapSamples: 16000,
@@ -75,15 +75,33 @@ export function Globe({ className, config = GLOBE_CONFIG }) {
     window.addEventListener("resize", onResize);
     onResize();
 
+    // Optimize: Pause globe rendering when off-screen or tab is backgrounded
+    let isVisible = true;
+    let isTabVisible = true;
+
+    const handleVisibility = () => {
+      isTabVisible = !document.hidden;
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+      },
+      { threshold: 0.05 }
+    );
+    if (canvasRef.current) observer.observe(canvasRef.current);
+
     const globe = createGlobe(canvasRef.current, {
       ...config,
-      width: width * 2,
-      height: width * 2,
+      width: width * 1.35,
+      height: width * 1.35,
       onRender: (state) => {
-        if (!pointerInteracting.current) phi += 0.005;
+        if (!isVisible || !isTabVisible) return; // skip render work when not visible
+        if (!pointerInteracting.current) phi += 0.012;
         state.phi = phi + rs.get();
-        state.width = width * 2;
-        state.height = width * 2;
+        state.width = width * 1.35,
+        state.height = width * 1.35;
       },
     });
 
@@ -91,6 +109,8 @@ export function Globe({ className, config = GLOBE_CONFIG }) {
     return () => {
       globe.destroy();
       window.removeEventListener("resize", onResize);
+      document.removeEventListener("visibilitychange", handleVisibility);
+      observer.disconnect();
     };
   }, [rs, config]);
 
@@ -103,7 +123,7 @@ export function Globe({ className, config = GLOBE_CONFIG }) {
     >
       <canvas
         className={twMerge(
-          "size-[30rem] opacity-0 transition-opacity duration-500 [contain:layout_paint_size]"
+          "size-[26rem] max-w-full opacity-0 transition-opacity duration-500 [contain:layout_paint_size]"
         )}
         ref={canvasRef}
         onPointerDown={(e) => {
@@ -113,9 +133,18 @@ export function Globe({ className, config = GLOBE_CONFIG }) {
         onPointerUp={() => updatePointerInteraction(null)}
         onPointerOut={() => updatePointerInteraction(null)}
         onMouseMove={(e) => updateMovement(e.clientX)}
-        onTouchMove={(e) =>
-          e.touches[0] && updateMovement(e.touches[0].clientX)
-        }
+        onTouchStart={(e) => {
+          if (e.touches[0]) {
+            pointerInteracting.current = e.touches[0].clientX;
+            updatePointerInteraction(e.touches[0].clientX);
+          }
+        }}
+        onTouchEnd={() => updatePointerInteraction(null)}
+        onTouchMove={(e) => {
+          if (e.touches[0]) {
+            updateMovement(e.touches[0].clientX);
+          }
+        }}
       />
     </div>
   );

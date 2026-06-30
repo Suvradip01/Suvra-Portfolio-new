@@ -32,13 +32,14 @@ const Hero = () => {
       id="home"
       className="flex items-start justify-center min-h-screen overflow-hidden md:items-start md:justify-start c-space"
     >
-      {/* Background Video */}
+      {/* Background Video — preload=none on mobile to skip network cost until play */}
       <video
         src="/assets/video-stars.mp4"
         autoPlay
         loop
         muted
         playsInline
+        preload={isMobile ? "none" : "auto"}
         className="absolute inset-0 w-full h-full object-cover -z-50"
       />
 
@@ -56,8 +57,9 @@ const Hero = () => {
         >
           <Canvas
             camera={{ position: [0, 1, 3] }}
+            dpr={isMobile ? [1, 1.5] : [1, 2]}
             gl={{
-              antialias: true,
+              antialias: !isMobile,
               powerPreference: "high-performance",
             }}
           >

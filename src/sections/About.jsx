@@ -8,6 +8,7 @@ import { Particles } from "../components/Particles";
 
 const About = () => {
   const grid2Container = useRef();
+  const grid2VideoRef = useRef(null); // ref to pause cont-bg.mp4 when off-screen
   const [activeGrid, setActiveGrid] = useState(null);
   const [showGlobe, setShowGlobe] = useState(false);
   const [isTouch, setIsTouch] = useState(false); //  Detect mobile/touch device
@@ -25,8 +26,25 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Pause the background video when it scrolls off-screen to save CPU/GPU decode
+  useEffect(() => {
+    const video = grid2VideoRef.current;
+    if (!video) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.play().catch(() => { });
+        } else {
+          video.pause();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
+
   const frameworks = useMemo(() => <Frameworks />, []);
-  const ScrollWrapper = useMemo(() => ScrollReveal, []);
   const globe = useMemo(() => <Globe />, []);
 
   const glowStyle = useMemo(
@@ -44,7 +62,7 @@ const About = () => {
   const handleGridClick = (id) => isTouch && setActiveGrid((prev) => (prev === id ? null : id));
 
   return (
-    <ScrollWrapper>
+    <ScrollReveal>
       <section className="c-space section-spacing" id="about">
         <h2 className="text-heading text-white-500 drop-shadow-[0_0_8px_rgba(127,90,240,0.5)]">
           About Me
@@ -86,13 +104,15 @@ const About = () => {
             onMouseLeave={handleGridLeave}
             onClick={() => handleGridClick(2)}
           >
-            {/* Background Video from Contact section */}
+            {/* Background Video — paused when off-screen via IntersectionObserver */}
             <video
+              ref={grid2VideoRef}
               src="/assets/cont-bg.mp4"
               autoPlay
               loop
               muted
               playsInline
+              preload="none"
               className="absolute inset-0 w-full h-full object-cover -z-10 opacity-100"
             />
             {/* Dark semi-transparent tint overlay on top of the video */}
@@ -144,7 +164,7 @@ const About = () => {
               </p>
             </div>
             {showGlobe && (
-              <figure className="absolute left-[30%] top-[10%] animate-spin-slow transform-gpu will-change-transform">
+              <figure className="absolute left-[37%] top-[-10%] w-full h-[104%] transform-gpu pointer-events-auto">
                 {globe}
               </figure>
             )}
@@ -194,7 +214,7 @@ const About = () => {
           </div>
         </div>
       </section>
-    </ScrollWrapper>
+    </ScrollReveal>
   );
 };
 

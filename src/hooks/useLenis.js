@@ -3,18 +3,27 @@ import Lenis from "lenis";
 
 let lenisInstance = null;
 
+// Detect touch/mobile once at module level
+const isTouchDevice =
+  typeof window !== "undefined" &&
+  ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+
 export const useLenis = () => {
   useEffect(() => {
-    // Create Lenis instance with premium smooth lerp configuration
+    // On touch/mobile devices, native scroll is already smooth and has better
+    // performance characteristics (momentum, rubber-band). Lenis on mobile
+    // intercepts the scroll and replaces native scroll with JS interpolation,
+    // causing stuttering especially on mid-range phones.
+    if (isTouchDevice) return;
+
     const lenis = new Lenis({
-      lerp: 0.08,              // Linear interpolation (lower = smoother glide, 0.08 is perfect for premium feel)
+      lerp: 0.1,              // Slightly snappier than 0.08 — still premium but less lag
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
       wheelMultiplier: 1.0,
-      touchMultiplier: 1.5,
       infinite: false,
-      autoRaf: true,           // Let Lenis natively run its optimized RAF loop for high refresh rates (120Hz/144Hz)
+      autoRaf: true,           // Lenis manages its own RAF — high refresh rate aware
     });
 
     lenisInstance = lenis;
@@ -27,7 +36,7 @@ export const useLenis = () => {
       const el = document.querySelector(id);
       if (el) {
         e.preventDefault();
-        lenis.scrollTo(el, { offset: 0, duration: 1.6 });
+        lenis.scrollTo(el, { offset: 0, duration: 1.4 });
       }
     };
     document.addEventListener("click", handleAnchorClick);

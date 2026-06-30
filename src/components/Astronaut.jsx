@@ -8,8 +8,6 @@ Title: Tenhun Falling spaceman (FanArt)
 
 import React, { useEffect, useRef } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
-import { useMotionValue, useSpring } from "framer-motion";
-
 import { useFrame } from "@react-three/fiber";
 
 export function Astronaut(props) {
@@ -18,19 +16,22 @@ export function Astronaut(props) {
     "/models/tenhun_falling_spaceman_fanart.glb"
   );
   const { actions } = useAnimations(animations, group);
+
   useEffect(() => {
     if (animations.length > 0) {
       actions[animations[0].name]?.play();
     }
   }, [actions, animations]);
 
-  const yPosition = useMotionValue(5);
-  const ySpring = useSpring(yPosition, { damping: 30 });
-  useEffect(() => {
-    ySpring.set(-1);
-  }, [ySpring]);
+  // Simple lerp-based drop-in: starts at y=5, lerps to y=-1 each frame
+  // Cheaper than framer-motion spring running alongside Three's RAF loop
+  const targetY = useRef(-1);
+  const currentY = useRef(5);
+
   useFrame(() => {
-    group.current.position.y = ySpring.get();
+    if (!group.current) return;
+    currentY.current += (targetY.current - currentY.current) * 0.05;
+    group.current.position.y = currentY.current;
   });
   return (
     <group

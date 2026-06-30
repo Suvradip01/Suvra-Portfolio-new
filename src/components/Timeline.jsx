@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 
 const waypointMeta = [
   {
@@ -181,19 +181,6 @@ export const Timeline = ({ data }) => {
 
                   {/* Dynamic Marquee Listing */}
                   <div className="relative h-[270px] overflow-hidden mt-4 rounded-xl">
-                    <style>{`
-                      @keyframes marquee-vertical {
-                        0% { transform: translateY(0); }
-                        100% { transform: translateY(-50%); }
-                      }
-                      .animate-marquee-vertical {
-                        animation: marquee-vertical 8s linear infinite;
-                      }
-                      .animate-marquee-vertical:hover {
-                        animation-play-state: paused;
-                      }
-                    `}</style>
-                    
                     {/* Visual fading masks at top/bottom */}
                     <div className="absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-[#0e0e0e] to-transparent z-10 pointer-events-none" />
                     <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-[#0e0e0e] to-transparent z-10 pointer-events-none" />

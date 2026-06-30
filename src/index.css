@@ -41,6 +41,11 @@
     100% { transform: translateX(0); }
   }
 
+  @keyframes marquee-vertical {
+    0%   { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+  }
+
 }
 
 /* Lenis smooth scroll recommended styles */
@@ -96,6 +101,19 @@ body {
 
 .animate-marquee:hover,
 .animate-marquee-reverse:hover {
+  animation-play-state: paused;
+}
+
+/* Vertical marquee for Timeline experience cards */
+.animate-marquee-vertical {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  animation: marquee-vertical 8s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-vertical:hover {
   animation-play-state: paused;
 }
 
