@@ -1,7 +1,7 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import HeroText from "../components/HeroText";
 import { Astronaut } from "../components/Astronaut";
-import { Float } from "@react-three/drei";
+import { Float, Preload } from "@react-three/drei";
 import { useMediaQuery } from "react-responsive";
 import { easing } from "maath";
 import { Suspense, useMemo, useState, useEffect } from "react";
@@ -14,7 +14,7 @@ const Hero = () => {
   //  Delay loading 3D Canvas on mobile (to prevent lag during first paint)
   useEffect(() => {
     if (isMobile) {
-      const timer = setTimeout(() => setShowCanvas(true), 500); // load after 0.5s
+      const timer = setTimeout(() => setShowCanvas(true), 200); // load after 0.5s
       return () => clearTimeout(timer);
     }
   }, [isMobile]);
@@ -57,9 +57,9 @@ const Hero = () => {
         >
           <Canvas
             camera={{ position: [0, 1, 3] }}
-            dpr={isMobile ? [1, 1.5] : [1, 2]}
+            dpr={isMobile ? [1, 1.2] : [1, 1.5]}
             gl={{
-              antialias: !isMobile,
+              antialias: false,
               powerPreference: "high-performance",
             }}
           >
@@ -68,6 +68,7 @@ const Hero = () => {
                 <Astronaut {...astronautProps} />
               </Float>
               {!isMobile && <Rig />} {/*  disable camera movement on mobile */}
+              <Preload all />
             </Suspense>
           </Canvas>
         </figure>
