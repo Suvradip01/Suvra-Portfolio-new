@@ -117,8 +117,24 @@ body {
   animation-play-state: paused;
 }
 
+/* ─── Pause non-critical animations while scrolling ───────────────────────────
+   Lenis interpolates scroll using transform on the RAF loop. When heavy CSS
+   animations (orbit, marquee, float) run simultaneously they create extra GPU
+   compositor layers that fight with Lenis, causing the stutter mid-slip.
+   We freeze them for the duration of scroll and resume 150ms after it stops. */
+.is-scrolling .animate-marquee,
+.is-scrolling .animate-marquee-reverse,
+.is-scrolling .animate-orbit,
+.is-scrolling .animate-float,
+.is-scrolling .animate-pulse-gradient {
+  animation-play-state: paused !important;
+}
+
 .section-spacing {
-  @apply min-h-screen mt-20 md:mt-30;
+  @apply py-20 md:py-28 mt-0;
+  /* Skip paint/layout of off-screen sections entirely until user approaches */
+  content-visibility: auto;
+  contain-intrinsic-size: 0 600px;
 }
 
 .text-heading {

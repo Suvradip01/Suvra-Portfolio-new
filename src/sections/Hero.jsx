@@ -32,7 +32,7 @@ const Hero = () => {
       id="home"
       className="flex items-start justify-center min-h-screen overflow-hidden md:items-start md:justify-start c-space"
     >
-      {/* Background Video — preload=none on mobile to skip network cost until play */}
+      {/* Background Video temporarily commented out to test performance
       <video
         src="/assets/video-stars.mp4"
         autoPlay
@@ -42,6 +42,7 @@ const Hero = () => {
         preload={isMobile ? "none" : "auto"}
         className="absolute inset-0 w-full h-full object-cover -z-50"
       />
+      */}
 
       {/* Overlay for contrast */}
       <div className="absolute inset-0 bg-black/40 -z-40" />

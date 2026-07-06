@@ -69,7 +69,7 @@ const Project = ({
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onClick={() => setIsModalOpen(true)}
-        className={`relative flex flex-col w-full h-full overflow-hidden rounded-3xl group cursor-pointer border border-white/5 bg-[#050508]/80 backdrop-blur-xl transition-all duration-700 shadow-2xl ${theme.border} hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)]`}
+        className={`relative flex flex-col w-full h-full overflow-hidden rounded-3xl group cursor-pointer border border-white/5 bg-[#0b0b0e] transition-all duration-700 shadow-2xl ${theme.border} hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)]`}
         style={{
           transform: isModalOpen ? "none" : `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
           transformStyle: "preserve-3d",

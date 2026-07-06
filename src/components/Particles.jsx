@@ -53,6 +53,20 @@ export const Particles = ({
       context.current = canvasRef.current.getContext("2d");
     }
     initCanvas();
+
+    // Pause RAF when off-screen to avoid drawing invisible pixels
+    let isIntersecting = true;
+    const visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        isIntersecting = entry.isIntersecting;
+        if (isIntersecting && !rafID.current) {
+          rafID.current = window.requestAnimationFrame(animate);
+        }
+      },
+      { threshold: 0.05 }
+    );
+    if (canvasContainerRef.current) visibilityObserver.observe(canvasContainerRef.current);
+
     animate();
 
     const handleResize = () => {
@@ -61,7 +75,6 @@ export const Particles = ({
     };
     window.addEventListener("resize", handleResize);
 
-    // Track raw mouse coords via ref — no setState, no re-renders
     const handleMouseMove = (e) => {
       rawMouse.current = { x: e.clientX, y: e.clientY };
       if (!mousePending.current) {
@@ -79,6 +92,7 @@ export const Particles = ({
     return () => {
       if (rafID.current) cancelAnimationFrame(rafID.current);
       if (resizeTimeout.current) clearTimeout(resizeTimeout.current);
+      visibilityObserver.disconnect();
       window.removeEventListener("resize", handleResize);
       if (!isTouchDevice) window.removeEventListener("mousemove", handleMouseMove);
     };

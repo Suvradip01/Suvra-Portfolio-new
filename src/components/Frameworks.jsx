@@ -90,7 +90,7 @@ const Icon = memo(({ src, alt, size = 40 }) => (
     height={size}
     loading="lazy"
     decoding="async"
-    className="rounded-sm transition-transform duration-300 ease-in-out hover:scale-110 will-change-transform"
+    className="rounded-sm transition-transform duration-300 ease-in-out hover:scale-110"
     onError={(e) => {
       e.currentTarget.src = "/assets/logos/default.svg";
     }}

@@ -23,14 +23,25 @@ export function Astronaut(props) {
     }
   }, [actions, animations]);
 
-  // Simple lerp-based drop-in: starts at y=5, lerps to y=-1 each frame
-  // Cheaper than framer-motion spring running alongside Three's RAF loop
+  // Frame-rate independent lerp-based drop-in with compilation settling delay
   const targetY = useRef(-1);
   const currentY = useRef(5);
+  const frameCount = useRef(0);
 
-  useFrame(() => {
+  useFrame((state, delta) => {
     if (!group.current) return;
-    currentY.current += (targetY.current - currentY.current) * 0.05;
+    
+    // Wait for initial GPU uploads and shader compilation to settle (10 frames)
+    if (frameCount.current < 10) {
+      frameCount.current += 1;
+      // Keep it at starting position during settling
+      group.current.position.y = currentY.current;
+      return;
+    }
+
+    // Dynamic, frame-rate independent lerp factor based on delta time
+    const lerpFactor = Math.min(0.05 * (delta * 60), 0.5);
+    currentY.current += (targetY.current - currentY.current) * lerpFactor;
     group.current.position.y = currentY.current;
   });
   return (

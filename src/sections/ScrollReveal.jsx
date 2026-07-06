@@ -35,7 +35,7 @@ const ScrollReveal = ({ children, className = "" }) => {
   const initialStyles = "opacity-0 translate-y-6 scale-[0.97]";
   const finalStyles = "opacity-100 translate-y-0 scale-100";
   const transitionStyles =
-    "transition-all duration-700 ease-out transform-gpu will-change-transform will-change-opacity";
+    "transition-all duration-700 ease-out transform-gpu [will-change:transform,opacity]";
 
   return (
     <div

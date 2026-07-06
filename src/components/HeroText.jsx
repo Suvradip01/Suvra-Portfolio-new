@@ -7,9 +7,17 @@ import TypingText from "./TypingText";
 const HeroText = () => {
   const words = ["Secure", "Modern", "Scalable"];
   const variants = {
-    hidden: { opacity: 0, x: -50 },
+    hidden: { opacity: 0, x: -30 },
     visible: { opacity: 1, x: 0 },
   };
+
+  const tweenTransition = (delay) => ({
+    type: "tween",
+    ease: "easeOut",
+    duration: 0.8,
+    delay,
+  });
+
   return (
     <div className="z-10 mt-20 text-center md:mt-40 md:text-left rounded-3xl bg-clip-text">
       {/* Desktop View */}
@@ -19,7 +27,7 @@ const HeroText = () => {
           variants={variants}
           initial="hidden"
           animate="visible"
-          transition={{ delay: 1 }}
+          transition={tweenTransition(0.3)}
         >
           Hi I'm <span className="text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.5)]">Suvradip</span>
         </motion.h1>
@@ -30,19 +38,20 @@ const HeroText = () => {
             variants={variants}
             initial="hidden"
             animate="visible"
-            transition={{ delay: 1.2 }}
+            transition={tweenTransition(0.5)}
           >
-          <TypingText
-            words={["A Developer"]}
-            className="text-white font-black text-5xl"
-          />
-          <br />  On a Mission to Craft
+            <TypingText
+              words={["An Engineer Who Ships", "A Software Developer", "An ML Practitioner", "A Problem Solver"]}
+              className="text-white font-black text-5xl"
+              pause={2000}
+            />
+            <br />  On a Mission to Craft
           </motion.p>
           <motion.div
             variants={variants}
             initial="hidden"
             animate="visible"
-            transition={{ delay: 1.5 }}
+            transition={tweenTransition(0.7)}
           >
             <FlipWords
               words={words}
@@ -54,16 +63,16 @@ const HeroText = () => {
             variants={variants}
             initial="hidden"
             animate="visible"
-            transition={{ delay: 1.8 }}
+            transition={tweenTransition(0.9)}
           >
             Applications
           </motion.p>
-          
+
           <motion.div
             variants={variants}
             initial="hidden"
             animate="visible"
-            transition={{ delay: 2.0 }}
+            transition={tweenTransition(1.1)}
             className="mt-8"
           >
             <a
@@ -83,7 +92,7 @@ const HeroText = () => {
           variants={variants}
           initial="hidden"
           animate="visible"
-          transition={{ delay: 1 }}
+          transition={tweenTransition(0.3)}
         >
           Hi, I'm <span className="text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.5)]">Suvradip</span>
         </motion.p>
@@ -93,7 +102,7 @@ const HeroText = () => {
             variants={variants}
             initial="hidden"
             animate="visible"
-            transition={{ delay: 1.2 }}
+            transition={tweenTransition(0.5)}
           >
             Building
           </motion.p>
@@ -101,7 +110,7 @@ const HeroText = () => {
             variants={variants}
             initial="hidden"
             animate="visible"
-            transition={{ delay: 1.5 }}
+            transition={tweenTransition(0.7)}
           >
             <FlipWords
               words={words}
@@ -113,16 +122,16 @@ const HeroText = () => {
             variants={variants}
             initial="hidden"
             animate="visible"
-            transition={{ delay: 1.8 }}
+            transition={tweenTransition(0.9)}
           >
             Applications
           </motion.p>
-          
+
           <motion.div
             variants={variants}
             initial="hidden"
             animate="visible"
-            transition={{ delay: 2.0 }}
+            transition={tweenTransition(1.1)}
             className="mt-6 flex justify-center"
           >
             <a

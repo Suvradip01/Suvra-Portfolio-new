@@ -60,7 +60,7 @@ export const Timeline = ({ data }) => {
   return (
     <div className="c-space section-spacing relative">
       {/* Console Frame */}
-      <div className="max-w-6xl mx-auto relative rounded-3xl border border-white/10 bg-black/60 backdrop-blur-xl p-6 md:p-8 overflow-hidden shadow-2xl">
+      <div className="max-w-6xl mx-auto relative rounded-3xl border border-white/10 bg-[#0c0c0e] p-6 md:p-8 overflow-hidden shadow-2xl">
         
         {/* Subtle Decorative Corners */}
         <div className="absolute top-4 left-4 w-3.5 h-3.5 border-t border-l border-white/20 pointer-events-none" />
@@ -155,7 +155,7 @@ export const Timeline = ({ data }) => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -15 }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
-                className="flex flex-col min-h-[380px] lg:h-[400px] rounded-2xl border border-white/10 bg-neutral-900/30 backdrop-blur-md p-6 relative overflow-hidden"
+                className="flex flex-col min-h-[380px] lg:h-[400px] rounded-2xl border border-white/10 bg-[#0e0e11] p-6 relative overflow-hidden"
                 style={{
                   boxShadow: `inset 0 0 20px ${activeMeta.glow}`,
                 }}

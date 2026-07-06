@@ -91,7 +91,7 @@ const Contact = () => {
       {showAlert && <Alert type={alertType} text={alertMessage} />}
 
       {/* Contact Card */}
-      <div className="flex flex-col items-center justify-center max-w-md p-5 mx-auto border border-white/10 rounded-2xl bg-primary/5 backdrop-blur-lg">
+      <div className="flex flex-col items-center justify-center max-w-md p-5 mx-auto border border-white/10 rounded-2xl bg-[#09090c] shadow-2xl">
         <div className="flex flex-col items-start w-full gap-5 mb-10">
           <h2 className="text-heading drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]">
             Let&apos;s Talk

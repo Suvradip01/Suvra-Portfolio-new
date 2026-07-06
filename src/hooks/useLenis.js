@@ -10,25 +10,105 @@ const isTouchDevice =
 
 export const useLenis = () => {
   useEffect(() => {
-    // On touch/mobile devices, native scroll is already smooth and has better
-    // performance characteristics (momentum, rubber-band). Lenis on mobile
-    // intercepts the scroll and replaces native scroll with JS interpolation,
-    // causing stuttering especially on mid-range phones.
+    // On touch/mobile devices, native scroll is already smooth — skip Lenis
     if (isTouchDevice) return;
 
     const lenis = new Lenis({
-      lerp: 0.1,              // Slightly snappier than 0.08 — still premium but less lag
+      lerp: 0.04,            // Low lerp makes the momentum last a long time (slippery slide)
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
-      wheelMultiplier: 1.0,
+      wheelMultiplier: 1.7,  // Larger input makes each scroll flick travel much further automatically
       infinite: false,
-      autoRaf: true,           // Lenis manages its own RAF — high refresh rate aware
+      autoRaf: true,         // Native RAF loop is optimized for high refresh rates
     });
 
     lenisInstance = lenis;
 
-    // Make lenis scroll targets work for anchor links
+    // ─── CUSTOM RUBBER-BAND EDGE BOUNCE ─────────────────────────────────────
+    // Animates the main container with a GPU transform when scrolling past top/bottom limits
+    const container = document.getElementById("root") || document.body;
+    let bounceY = 0;
+    let isBouncing = false;
+
+    const triggerBounce = () => {
+      if (isBouncing) return;
+      isBouncing = true;
+
+      const update = () => {
+        // Smoothly decay/lerp the bounce offset back to 0
+        bounceY *= 0.82; 
+
+        if (Math.abs(bounceY) < 0.2) {
+          bounceY = 0;
+          container.style.transform = "";
+          isBouncing = false;
+        } else {
+          // Apply GPU translate3d with a subtle scale compression for elastic feel
+          const scale = 1 + Math.abs(bounceY) * 0.00003;
+          container.style.transform = `translate3d(0, ${bounceY}px, 0) scale(${scale})`;
+          requestAnimationFrame(update);
+        }
+      };
+
+      requestAnimationFrame(update);
+    };
+
+    const handleWheel = (e) => {
+      const scroll = lenis.scroll;
+      const limit = lenis.limit;
+
+      if (scroll <= 0 && e.deltaY < 0) {
+        // At the top, scrolling up
+        bounceY = Math.min(60, bounceY - e.deltaY * 0.12);
+        triggerBounce();
+      } else if (scroll >= limit && e.deltaY > 0) {
+        // At the bottom, scrolling down
+        bounceY = Math.max(-60, bounceY - e.deltaY * 0.12);
+        triggerBounce();
+      }
+    };
+
+    let touchStart = 0;
+    const handleTouchStart = (e) => {
+      if (e.touches[0]) {
+        touchStart = e.touches[0].clientY;
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (!e.touches[0]) return;
+      const touchY = e.touches[0].clientY;
+      const deltaY = touchStart - touchY;
+      touchStart = touchY;
+
+      const scroll = lenis.scroll;
+      const limit = lenis.limit;
+
+      if (scroll <= 0 && deltaY < 0) {
+        bounceY = Math.min(60, bounceY - deltaY * 0.25);
+        triggerBounce();
+      } else if (scroll >= limit && deltaY > 0) {
+        bounceY = Math.max(-60, bounceY - deltaY * 0.25);
+        triggerBounce();
+      }
+    };
+
+    window.addEventListener("wheel", handleWheel, { passive: true });
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+
+    // Add/remove 'is-scrolling' class on body so CSS can pause non-critical animations
+    let scrollEndTimer = null;
+    lenis.on("scroll", () => {
+      document.body.classList.add("is-scrolling");
+      clearTimeout(scrollEndTimer);
+      scrollEndTimer = setTimeout(() => {
+        document.body.classList.remove("is-scrolling");
+      }, 150);
+    });
+
+    // Lenis anchor link handling
     const handleAnchorClick = (e) => {
       const target = e.target.closest('a[href^="#"]');
       if (!target) return;
@@ -42,9 +122,15 @@ export const useLenis = () => {
     document.addEventListener("click", handleAnchorClick);
 
     return () => {
+      clearTimeout(scrollEndTimer);
+      document.body.classList.remove("is-scrolling");
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
       document.removeEventListener("click", handleAnchorClick);
       lenis.destroy();
       lenisInstance = null;
+      container.style.transform = "";
     };
   }, []);
 };
@@ -62,4 +148,3 @@ export const stopScroll = () => {
 export const startScroll = () => {
   if (lenisInstance) lenisInstance.start();
 };
-
