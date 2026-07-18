@@ -100,11 +100,16 @@ export const useLenis = () => {
 
     // Add/remove 'is-scrolling' class on body so CSS can pause non-critical animations
     let scrollEndTimer = null;
+    let isCurrentlyScrolling = false;
     lenis.on("scroll", () => {
-      document.body.classList.add("is-scrolling");
+      if (!isCurrentlyScrolling) {
+        document.body.classList.add("is-scrolling");
+        isCurrentlyScrolling = true;
+      }
       clearTimeout(scrollEndTimer);
       scrollEndTimer = setTimeout(() => {
         document.body.classList.remove("is-scrolling");
+        isCurrentlyScrolling = false;
       }, 150);
     });
 

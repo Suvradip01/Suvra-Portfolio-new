@@ -33,7 +33,10 @@ const Project = ({
   const theme = themes[index % themes.length];
 
   const handleMouseMove = (e) => {
-    if (isModalOpen || !cardRef.current) return;
+    // ⚡ Perf fix: Do not recalculate 3D tilt or glow during active scroll.
+    // Scrolling past the cards triggers mouse events. If we call getBoundingClientRect
+    // while Lenis is animating the scroll, it causes a forced synchronous layout (massive stutter).
+    if (isModalOpen || !cardRef.current || document.body.classList.contains("is-scrolling")) return;
     const card = cardRef.current;
     const rect = card.getBoundingClientRect();
     
@@ -77,10 +80,18 @@ const Project = ({
         }}
       >
         {/* Glowing Ambient Spotlight */}
+        {/* ⚡ Perf fix: Replaced dynamic radial-gradient string with a hardware-accelerated
+            translating div. Recompiling the gradient on every mouse move forced massive repaints. */}
         <div
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"
+          className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0 rounded-full"
           style={{
-            background: `radial-gradient(350px circle at ${glowPos.x}px ${glowPos.y}px, ${theme.spotlight}, transparent 80%)`,
+            width: '700px',
+            height: '700px',
+            left: '-350px',
+            top: '-350px',
+            transform: `translate3d(${glowPos.x}px, ${glowPos.y}px, 0)`,
+            background: `radial-gradient(circle, ${theme.spotlight}, transparent 70%)`,
+            willChange: 'transform'
           }}
         />
 

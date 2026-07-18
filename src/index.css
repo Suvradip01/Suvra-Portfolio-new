@@ -46,6 +46,10 @@
     100% { transform: translateY(-50%); }
   }
 
+  @keyframes radar-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
 }
 
 /* Lenis smooth scroll recommended styles */
@@ -127,8 +131,22 @@ body {
 .is-scrolling .animate-marquee-vertical,
 .is-scrolling .animate-orbit,
 .is-scrolling .animate-float,
-.is-scrolling .animate-pulse-gradient {
+.is-scrolling .animate-pulse-gradient,
+.is-scrolling .animate-pulse,
+.is-scrolling .animate-radar-spin {
   animation-play-state: paused !important;
+}
+
+/* ⚡ Perf fix: Disable pointer events globally during scroll. 
+   Scrolling moves the page under the mouse, firing continuous mouseenter/mouseleave 
+   React state updates and CSS :hover recalculations on heavy 3D cards. 
+   This completely pauses that interactivity storm until scroll stops. */
+body.is-scrolling * {
+  pointer-events: none !important;
+}
+
+.animate-radar-spin {
+  animation: radar-spin 30s linear infinite;
 }
 
 .section-spacing {

@@ -60,7 +60,10 @@ export const Timeline = ({ data }) => {
   return (
     <div className="c-space section-spacing relative">
       {/* Console Frame */}
-      <div className="max-w-6xl mx-auto relative rounded-3xl border border-white/10 bg-[#0c0c0e] p-6 md:p-8 overflow-hidden shadow-2xl">
+      {/* ⚡ Perf fix: Added transform-gpu so the browser promotes this entire container
+          (with its complex ambient grid background) to a separate hardware layer.
+          This prevents massive repaint operations while scrolling past the Timeline. */}
+      <div className="max-w-6xl mx-auto relative rounded-3xl border border-white/10 bg-[#0c0c0e] p-6 md:p-8 overflow-hidden shadow-2xl transform-gpu">
         
         {/* Subtle Decorative Corners */}
         <div className="absolute top-4 left-4 w-3.5 h-3.5 border-t border-l border-white/20 pointer-events-none" />
@@ -147,34 +150,38 @@ export const Timeline = ({ data }) => {
           </div>
 
           {/* RIGHT: HUD Details Terminal */}
-          <div className="lg:col-span-7 flex flex-col h-full">
+          {/* ⚡ Perf fix: The container and SVG radar are now OUTSIDE AnimatePresence.
+              Previously, switching tabs destroyed and recreated the entire terminal box,
+              the radar, and the CSS marquee, causing a massive frame drop. Now they persist,
+              and only the text crossfades smoothly. */}
+          <div 
+            className="lg:col-span-7 flex flex-col min-h-[380px] lg:h-[400px] rounded-2xl border border-white/10 bg-[#0e0e11] p-6 relative overflow-hidden transition-all duration-500"
+            style={{ boxShadow: `inset 0 0 20px ${activeMeta.glow}` }}
+          >
+            {/* SVG Concentric Orbit Radar Indicator */}
+            <div className="absolute -top-12 -right-12 w-48 h-48 opacity-10 pointer-events-none transition-colors duration-500" style={{ color: activeMeta.color }}>
+              <svg viewBox="0 0 100 100" className="w-full h-full animate-radar-spin">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3,3" />
+                <circle cx="50" cy="50" r="38" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="10,5" />
+                <circle cx="50" cy="50" r="28" fill="none" stroke="currentColor" strokeWidth="0.5" />
+              </svg>
+            </div>
+
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeIndex}
                 initial={{ opacity: 0, x: 15 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -15 }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
-                className="flex flex-col min-h-[380px] lg:h-[400px] rounded-2xl border border-white/10 bg-[#0e0e11] p-6 relative overflow-hidden"
-                style={{
-                  boxShadow: `inset 0 0 20px ${activeMeta.glow}`,
-                }}
+                transition={{ duration: 0.15, ease: "easeOut" }} // Snappier transition
+                className="flex-1 flex flex-col relative z-10"
               >
-                {/* SVG Concentric Orbit Radar Indicator */}
-                <div className="absolute -top-12 -right-12 w-48 h-48 opacity-10 pointer-events-none">
-                  <svg viewBox="0 0 100 100" className="w-full h-full animate-[spin_30s_linear_infinite]" style={{ color: activeMeta.color }}>
-                    <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3,3" />
-                    <circle cx="50" cy="50" r="38" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="10,5" />
-                    <circle cx="50" cy="50" r="28" fill="none" stroke="currentColor" strokeWidth="0.5" />
-                  </svg>
-                </div>
-
                 <div className="flex-1 overflow-y-auto pr-1">
                   <div className="mb-5">
                     <h3 className="text-xl md:text-2xl font-bold text-white leading-tight font-outfit uppercase">
                       {activeItem.title}
                     </h3>
-                    <p className="text-sm font-semibold mt-1 font-sans" style={{ color: activeMeta.color }}>
+                    <p className="text-sm font-semibold mt-1 font-sans transition-colors duration-500" style={{ color: activeMeta.color }}>
                       {activeItem.job}
                     </p>
                   </div>
@@ -192,7 +199,7 @@ export const Timeline = ({ data }) => {
                           className="flex items-start gap-3 p-3.5 rounded-lg border border-white/[0.02] bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/[0.05] transition-all duration-300"
                         >
                           <span
-                            className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0"
+                            className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 transition-colors duration-500"
                             style={{
                               backgroundColor: activeMeta.color,
                               boxShadow: `0 0 8px ${activeMeta.color}`,
