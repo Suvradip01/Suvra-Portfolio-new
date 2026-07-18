@@ -14,11 +14,11 @@ export const useLenis = () => {
     if (isTouchDevice) return;
 
     const lenis = new Lenis({
-      lerp: 0.04,            // Low lerp makes the momentum last a long time (slippery slide)
+      lerp: 0.08,            // ⚡ Perf fix: was 0.04 (75 settle-frames). 0.08 = ~35 frames — half the compositor thrash, still silky
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
-      wheelMultiplier: 1.7,  // Larger input makes each scroll flick travel much further automatically
+      wheelMultiplier: 1.3,  // ⚡ Perf fix: was 1.7 — lower prevents over-travel on fast swipes that compounded stutter
       infinite: false,
       autoRaf: true,         // Native RAF loop is optimized for high refresh rates
     });

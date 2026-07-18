@@ -124,6 +124,7 @@ body {
    We freeze them for the duration of scroll and resume 150ms after it stops. */
 .is-scrolling .animate-marquee,
 .is-scrolling .animate-marquee-reverse,
+.is-scrolling .animate-marquee-vertical,
 .is-scrolling .animate-orbit,
 .is-scrolling .animate-float,
 .is-scrolling .animate-pulse-gradient {
@@ -132,9 +133,10 @@ body {
 
 .section-spacing {
   @apply py-20 md:py-28 mt-0;
-  /* Skip paint/layout of off-screen sections entirely until user approaches */
-  content-visibility: auto;
-  contain-intrinsic-size: 0 600px;
+  /* ⚡ Perf fix: removed content-visibility:auto — sections are already lazy-mounted
+     via the portfolio store, so content-visibility adds zero benefit but causes
+     expensive layout thrash each time the browser transitions between "skipped" and
+     "rendered" states during scroll, which was contributing to the stutter. */
 }
 
 .text-heading {

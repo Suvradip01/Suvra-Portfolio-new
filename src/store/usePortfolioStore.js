@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export const usePortfolioStore = create((set, get) => ({
+export const usePortfolioStore = create((set) => ({
   renderAbout: false,
   renderProjects: false,
   renderExperiences: false,
@@ -18,12 +18,5 @@ export const usePortfolioStore = create((set, get) => ({
     renderExperiences: true,
     renderContact: true,
   }),
-
-  // Helper to stagger renders over time to keep the main thread quiet
-  renderAllStaggered: (delayStart = 0, gap = 80) => {
-    setTimeout(() => set({ renderAbout: true }), delayStart);
-    setTimeout(() => set({ renderProjects: true }), delayStart + gap);
-    setTimeout(() => set({ renderExperiences: true }), delayStart + gap * 2);
-    setTimeout(() => set({ renderContact: true }), delayStart + gap * 3);
-  }
 }));
+

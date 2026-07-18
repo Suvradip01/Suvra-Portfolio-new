@@ -43,6 +43,13 @@ export const Particles = ({
   const dpr = typeof window !== "undefined" ? Math.min(window.devicePixelRatio, 2) : 1;
   const rafID = useRef(null);
   const resizeTimeout = useRef(null);
+  // ⚡ Perf: track intersection state as a ref so animate() (defined outside useEffect) can read it
+  const isIntersectingRef = useRef(true);
+  // ⚡ Perf: cache canvas bounding rect — updated only on resize (debounced 200ms).
+  // Previously getBoundingClientRect() was called on EVERY mouse-move RAF tick,
+  // forcing a full layout flush each time. Since the canvas doesn't move between
+  // resizes, we read the rect once and reuse it — eliminates the 496ms forced reflow.
+  const canvasRectRef = useRef({ left: 0, top: 0 });
   // Reduce particles on mobile
   const resolvedQuantity = isTouchDevice ? Math.min(quantity, DEFAULT_QUANTITY_MOBILE) : quantity;
 
@@ -55,11 +62,11 @@ export const Particles = ({
     initCanvas();
 
     // Pause RAF when off-screen to avoid drawing invisible pixels
-    let isIntersecting = true;
     const visibilityObserver = new IntersectionObserver(
       ([entry]) => {
-        isIntersecting = entry.isIntersecting;
-        if (isIntersecting && !rafID.current) {
+        isIntersectingRef.current = entry.isIntersecting;
+        // Restart RAF if we came back into view and the loop had exited
+        if (isIntersectingRef.current && !rafID.current) {
           rafID.current = window.requestAnimationFrame(animate);
         }
       },
@@ -108,16 +115,18 @@ export const Particles = ({
   };
 
   const onMouseMove = () => {
-    if (canvasRef.current) {
-      const rect = canvasRef.current.getBoundingClientRect();
-      const { w, h } = canvasSize.current;
-      const x = rawMouse.current.x - rect.left - w / 2;
-      const y = rawMouse.current.y - rect.top - h / 2;
-      const inside = x < w / 2 && x > -w / 2 && y < h / 2 && y > -h / 2;
-      if (inside) {
-        mouse.current.x = x;
-        mouse.current.y = y;
-      }
+    // ⚡ Perf fix: use the cached rect instead of calling getBoundingClientRect() live.
+    // getBoundingClientRect() forces a synchronous layout flush — when called inside
+    // a RAF tick while Lenis is also reading scroll position, it caused a 496ms
+    // cascading forced reflow. The canvas position only changes on resize (handled above).
+    const { left, top } = canvasRectRef.current;
+    const { w, h } = canvasSize.current;
+    const x = rawMouse.current.x - left - w / 2;
+    const y = rawMouse.current.y - top - h / 2;
+    const inside = x < w / 2 && x > -w / 2 && y < h / 2 && y > -h / 2;
+    if (inside) {
+      mouse.current.x = x;
+      mouse.current.y = y;
     }
   };
 
@@ -130,6 +139,11 @@ export const Particles = ({
       canvasRef.current.style.width = `${canvasSize.current.w}px`;
       canvasRef.current.style.height = `${canvasSize.current.h}px`;
       context.current.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      // ⚡ Perf: update the cached rect here (on resize), not on every mouse move.
+      // This is the ONLY place we call getBoundingClientRect — debounced via resizeCanvas.
+      const r = canvasRef.current.getBoundingClientRect();
+      canvasRectRef.current = { left: r.left, top: r.top };
 
       circles.current = [];
       for (let i = 0; i < resolvedQuantity; i++) {
@@ -189,6 +203,15 @@ export const Particles = ({
   };
 
   const animate = () => {
+    // ⚡ Perf fix: actually exit the RAF loop when off-screen.
+    // Previously rafID was always re-scheduled unconditionally — particles ran
+    // forever even when completely invisible, draining GPU the entire session.
+    // Uses a ref (isIntersectingRef) because this function is defined outside useEffect.
+    if (!isIntersectingRef.current) {
+      rafID.current = null;
+      return;
+    }
+
     clearContext();
     circles.current.forEach((circle, i) => {
       const edge = [
