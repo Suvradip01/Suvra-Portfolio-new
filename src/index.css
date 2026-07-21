@@ -121,32 +121,32 @@ body {
   animation-play-state: paused;
 }
 
-/* ─── Pause non-critical animations while scrolling ───────────────────────────
-   Lenis interpolates scroll using transform on the RAF loop. When heavy CSS
-   animations (orbit, marquee, float) run simultaneously they create extra GPU
-   compositor layers that fight with Lenis, causing the stutter mid-slip.
-   We freeze them for the duration of scroll and resume 150ms after it stops. */
-.is-scrolling .animate-marquee,
-.is-scrolling .animate-marquee-reverse,
-.is-scrolling .animate-marquee-vertical,
-.is-scrolling .animate-orbit,
-.is-scrolling .animate-float,
-.is-scrolling .animate-pulse-gradient,
-.is-scrolling .animate-pulse,
-.is-scrolling .animate-radar-spin {
-  animation-play-state: paused !important;
+.highlights-marquee {
+  animation: marquee-vertical 24s linear infinite;
+  will-change: transform;
 }
+
+/* Animation pausing during scroll removed. Modern GPUs handle transform animations in the compositor thread. Pausing/unpausing them via JavaScript class toggling causes main-thread jitter. */
 
 /* ⚡ Perf fix: Disable pointer events globally during scroll. 
    Scrolling moves the page under the mouse, firing continuous mouseenter/mouseleave 
    React state updates and CSS :hover recalculations on heavy 3D cards. 
    This completely pauses that interactivity storm until scroll stops. */
-body.is-scrolling * {
+body.is-scrolling {
   pointer-events: none !important;
 }
 
 .animate-radar-spin {
   animation: radar-spin 30s linear infinite;
+}
+
+/* Hide scrollbar for smooth custom scroll areas */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 .section-spacing {
@@ -251,3 +251,368 @@ body.is-scrolling * {
   object-position: center center;
   transform: none;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   PARALLAX STACKED PROJECT CARDS  —  animated conic-gradient border
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Rotating conic-gradient animation ── */
+@keyframes border-spin {
+  0%   { --border-angle: 0deg; }
+  100% { --border-angle: 360deg; }
+}
+
+@property --border-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   CARD SHELL  —  the animated-border container
+   ────────────────────────────────────────────────────────────────── */
+.pcard-shell {
+  position: relative;
+  border-radius: 22px;
+  padding: 1.5px;
+  /* Animated conic-gradient as the border */
+  background: conic-gradient(
+    from var(--border-angle),
+    var(--ca) 0%,
+    var(--cb) 25%,
+    rgba(255,255,255,0.06) 40%,
+    var(--cb) 60%,
+    var(--ca) 75%,
+    rgba(255,255,255,0.06) 88%,
+    var(--ca) 100%
+  );
+  animation: border-spin 4s linear infinite;
+  box-shadow:
+    0 0 0 0 transparent,
+    0 24px 64px rgba(0,0,0,0.65),
+    0 4px 24px rgba(0,0,0,0.5);
+  transition: box-shadow 0.4s ease;
+  will-change: background;
+}
+
+.pcard-shell:hover {
+  box-shadow:
+    0 0 55px color-mix(in srgb, var(--ca) 18%, transparent),
+    0 30px 80px rgba(0,0,0,0.75);
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   CARD SURFACE  —  the dark inner content area
+   ────────────────────────────────────────────────────────────────── */
+.pcard-surface {
+  background: #08080d;
+  border-radius: 20.5px;
+  padding: 30px 36px 34px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   HEADER ROW — number / title+tech / button
+   ────────────────────────────────────────────────────────────────── */
+.pcard-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+/* Large bold number */
+.pcard-num {
+  font-size: clamp(3rem, 6vw, 5.8rem);
+  font-weight: 900;
+  line-height: 1;
+  color: #ffffff;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  min-width: 100px;
+  user-select: none;
+}
+
+/* Title + tech sub-line */
+.pcard-meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  min-width: 160px;
+  gap: 5px;
+}
+
+.pcard-title {
+  font-size: clamp(0.82rem, 1.55vw, 1.12rem);
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.08em;
+  line-height: 1.25;
+  margin: 0;
+  white-space: normal;
+}
+
+.pcard-tech {
+  font-size: clamp(0.68rem, 1.1vw, 0.8rem);
+  color: #6b7280;
+  letter-spacing: 0.02em;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   CTA BUTTON  —  pill with its own animated-ring border
+   ────────────────────────────────────────────────────────────────── */
+.pcard-btn-shell {
+  position: relative;
+  border-radius: 999px;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--border-angle),
+    var(--ca) 0%,
+    var(--cb) 30%,
+    rgba(255,255,255,0.12) 48%,
+    var(--cb) 65%,
+    var(--ca) 80%,
+    rgba(255,255,255,0.12) 92%,
+    var(--ca) 100%
+  );
+  animation: border-spin 4s linear infinite;
+  flex-shrink: 0;
+  margin-left: auto;
+  align-self: center;
+  will-change: background;
+}
+
+.pcard-btn-ring {
+  /* Fallback layer — not needed with @property but keeps things safe */
+  display: none;
+}
+
+.pcard-btn-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 24px;
+  border-radius: 999px;
+  background: #08080d;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #ffffff;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.3s;
+  position: relative;
+  z-index: 1;
+}
+
+.pcard-btn-inner:hover {
+  background: #111118;
+}
+
+.pcard-btn-arrow {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.pcard-btn-inner:hover .pcard-btn-arrow {
+  transform: translateX(4px);
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   DIVIDER
+   ────────────────────────────────────────────────────────────────── */
+.pcard-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,0.09) 20%,
+    rgba(255,255,255,0.09) 80%,
+    transparent 100%
+  );
+  margin: 22px 0 26px;
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   BODY ROW  —  mockup left, description right
+   ────────────────────────────────────────────────────────────────── */
+.pcard-body {
+  display: flex;
+  gap: 36px;
+  align-items: flex-start;
+}
+
+/* ── Browser Mockup ── */
+.pcard-mockup {
+  flex: 0 0 50%;
+  max-width: 50%;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.09);
+  background: #0a0a10;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  transition: transform 0.45s cubic-bezier(0.22,1,0.36,1),
+              box-shadow 0.45s ease;
+}
+
+.pcard-shell:hover .pcard-mockup {
+  transform: scale(1.018) translateY(-2px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.75);
+}
+
+/* macOS dots bar */
+.pcard-mockup-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 13px;
+  background: #0c0c12;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.pcard-dot {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.pcard-dot-r { background: #ff5f56; }
+.pcard-dot-y { background: #ffbd2e; }
+.pcard-dot-g { background: #27c93f; }
+
+/* Screenshot */
+.pcard-mockup-screen {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.pcard-mockup-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+  transition: transform 0.65s cubic-bezier(0.22,1,0.36,1);
+}
+
+.pcard-shell:hover .pcard-mockup-img {
+  transform: scale(1.05);
+}
+
+/* ── Right side: desc + tags + explore ── */
+.pcard-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+  padding-top: 4px;
+}
+
+.pcard-desc {
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+  color: #ffffff;
+  line-height: 1.85;
+  font-weight: 400;
+  margin: 0;
+  transition: color 0.3s;
+}
+
+.pcard-shell:hover .pcard-desc {
+  color: #ffffff;
+}
+
+/* ── Tech icon badges ── */
+.pcard-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pcard-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.05);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #d1d5db;
+  letter-spacing: 0.03em;
+  transition: border-color 0.25s, background 0.25s, color 0.25s;
+  white-space: nowrap;
+}
+
+.pcard-tag:hover {
+  border-color: color-mix(in srgb, var(--ca) 60%, transparent);
+  background: color-mix(in srgb, var(--ca) 12%, transparent);
+  color: #ffffff;
+}
+
+.pcard-tag-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.pcard-tag-name {
+  line-height: 1;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────
+   RESPONSIVE
+   ────────────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .pcard-body {
+    flex-direction: column;
+    gap: 24px;
+  }
+  .pcard-mockup {
+    flex: unset;
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .pcard-surface {
+    padding: 22px 18px 26px;
+  }
+  .pcard-header {
+    gap: 12px;
+  }
+  .pcard-num {
+    font-size: 2.6rem;
+    min-width: 72px;
+  }
+  .pcard-btn-shell {
+    margin-left: 0;
+    order: 3;
+    width: 100%;
+  }
+  .pcard-btn-inner {
+    width: 100%;
+    justify-content: center;
+  }
+  .pcard-divider {
+    margin: 16px 0 20px;
+  }
+}

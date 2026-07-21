@@ -8,7 +8,7 @@ function Navigation() {
       { name: "Home", href: "#home" },
       { name: "About", href: "#about" },
       { name: "Projects", href: "#projects" },
-      { name: "Experience", href: "#experience" },
+      { name: "Education", href: "#education" },
       { name: "Contact", href: "#contact" },
     ],
     []
@@ -50,14 +50,14 @@ const Navbar = () => {
       </div>
 
       {/* Navbar */}
-      <div className="fixed inset-x-0 z-20 w-full">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 backdrop-blur-lg bg-black/30 relative">
-          <div className="flex items-center justify-between py-3">
+      <div className="fixed inset-x-0 top-0 z-50 w-full pt-3 px-4 sm:px-6 lg:px-8 pointer-events-auto">
+        <div className="mx-auto max-w-7xl px-6 py-2.5 rounded-2xl bg-[#000000]/85 backdrop-blur-xl border border-white/15 shadow-2xl transition-all duration-300">
+          <div className="flex items-center justify-between">
 
             {/* Brand */}
             <a
               href="#home"
-              className="text-xl font-bold transition-colors text-purple-400 hover:text-white"
+              className="text-xl font-extrabold tracking-tight text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] hover:drop-shadow-[0_0_12px_rgba(255,255,255,1)] transition-all duration-300"
             >
               Suvradip
             </a>

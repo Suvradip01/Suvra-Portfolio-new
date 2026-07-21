@@ -94,14 +94,15 @@ export function Globe({ className, config = GLOBE_CONFIG }) {
 
     const globe = createGlobe(canvasRef.current, {
       ...config,
-      width: width * 1.35,
-      height: width * 1.35,
+      width: Math.round(width * 1.35),
+      height: Math.round(width * 1.35),
       onRender: (state) => {
         if (!isVisible || !isTabVisible) return; // skip render work when not visible
         if (!pointerInteracting.current) phi += 0.012;
         state.phi = phi + rs.get();
-        state.width = width * 1.35,
-        state.height = width * 1.35;
+        const currentW = Math.round(width * 1.35);
+        state.width = currentW;
+        state.height = currentW;
       },
     });
 

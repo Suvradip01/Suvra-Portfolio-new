@@ -64,7 +64,7 @@ export const Timeline = ({ data }) => {
           (with its complex ambient grid background) to a separate hardware layer.
           This prevents massive repaint operations while scrolling past the Timeline. */}
       <div className="max-w-6xl mx-auto relative rounded-3xl border border-white/10 bg-[#0c0c0e] p-6 md:p-8 overflow-hidden shadow-2xl transform-gpu">
-        
+
         {/* Subtle Decorative Corners */}
         <div className="absolute top-4 left-4 w-3.5 h-3.5 border-t border-l border-white/20 pointer-events-none" />
         <div className="absolute top-4 right-4 w-3.5 h-3.5 border-t border-r border-white/20 pointer-events-none" />
@@ -91,7 +91,7 @@ export const Timeline = ({ data }) => {
 
         {/* Console Showcase Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 relative z-10 items-stretch">
-          
+
           {/* LEFT: Waypoint Navigation Panel */}
           <div className="lg:col-span-5 flex flex-col space-y-4">
             <div className="space-y-4 relative">
@@ -154,7 +154,7 @@ export const Timeline = ({ data }) => {
               Previously, switching tabs destroyed and recreated the entire terminal box,
               the radar, and the CSS marquee, causing a massive frame drop. Now they persist,
               and only the text crossfades smoothly. */}
-          <div 
+          <div
             className="lg:col-span-7 flex flex-col min-h-[380px] lg:h-[400px] rounded-2xl border border-white/10 bg-[#0e0e11] p-6 relative overflow-hidden transition-all duration-500"
             style={{ boxShadow: `inset 0 0 20px ${activeMeta.glow}` }}
           >

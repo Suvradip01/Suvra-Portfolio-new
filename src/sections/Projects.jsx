@@ -1,42 +1,142 @@
-import { useState } from "react";
-import Project from "../components/Project";
+import React, { useRef } from "react";
+import { motion, useScroll, useTransform } from "motion/react";
+import ParallaxProjectCard from "../components/ParallaxProjectCard";
 import { myProjects } from "../constants";
-import { motion } from "motion/react";
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Each card gets a sticky offset so it "sits" slightly lower than the previous
+// creating the physical stacking illusion from the design reference.
+// ─────────────────────────────────────────────────────────────────────────────
+const CARD_STICKY_TOP_BASE = 80; // px from top for first card
+const CARD_STICKY_STEP = 18;     // each next card peeks this many px below the last
+
+// The scroll-distance consumed per card before the NEXT card starts stacking in.
+// Making this taller gives a slower, cinematic pace.
+const SCROLL_PER_CARD = 500; // px of scroll travel per card
+
+const StickyCard = ({ project, index, total }) => {
+  const ref = useRef(null);
+
+  // Track how far within the section we've scrolled
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  // Scale + opacity for the "squish / fade" as the next card stacks over it
+  const scale = useTransform(
+    scrollYProgress,
+    [0, 0.35, 0.65, 1],
+    [0.96, 1, index === total - 1 ? 1 : 0.96, index === total - 1 ? 1 : 0.93]
+  );
+
+  const opacity = useTransform(
+    scrollYProgress,
+    [0, 0.2, 0.7, 1],
+    [0.6, 1, 1, index === total - 1 ? 1 : 0.85]
+  );
+
+  const stickyTop = CARD_STICKY_TOP_BASE + index * CARD_STICKY_STEP;
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        position: "sticky",
+        top: `${stickyTop}px`,
+        zIndex: 10 + index,
+        marginBottom: index === total - 1 ? 0 : "2px",
+      }}
+    >
+      <motion.div
+        style={{ scale, opacity }}
+        initial={{ y: 60, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{
+          duration: 0.7,
+          ease: [0.215, 0.61, 0.355, 1],
+          delay: 0.05,
+        }}
+      >
+        <ParallaxProjectCard {...project} index={index} />
+      </motion.div>
+    </div>
+  );
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Projects section — sticky stacked parallax cards
+// ─────────────────────────────────────────────────────────────────────────────
 const Projects = () => {
+  const sectionRef = useRef(null);
+
   return (
     <section
       id="projects"
-      className="relative flex flex-col py-32 px-4 md:px-8 items-center w-full"
+      ref={sectionRef}
+      className="relative w-full py-24 px-4 md:px-8"
     >
-      <div className="max-w-7xl w-full flex flex-col items-center">
-        {/* Reverted Heading Style */}
-        <div className="w-full flex flex-col mb-10">
-          <h2 className="text-heading text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.45)] text-left w-full">
-            My Selected Projects
-          </h2>
-          {/* Divider below heading */}
-          <div className="bg-gradient-to-r from-transparent via-neutral-700 to-transparent mt-4 h-[1px] w-full" />
-        </div>
+      {/* ── Heading ── */}
+      <div className="max-w-7xl mx-auto mb-16 flex flex-col items-start">
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: [0.215, 0.61, 0.355, 1] }}
+          className="flex items-center gap-4 mb-3"
+        >
+          <span className="text-xs font-bold tracking-[0.3em] uppercase text-neutral-500">
+            Portfolio
+          </span>
+          <span className="h-px w-12 bg-neutral-700" />
+        </motion.div>
 
-        {/* Balanced wrapping flex container to avoid empty space */}
-        <div className="flex flex-wrap justify-center gap-8 w-full items-stretch">
-          {myProjects.map((project, index) => {
-            return (
-              <motion.div
-                key={project.id}
-                className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.35rem)] flex animate-fade-in"
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.8, delay: index * 0.12, ease: [0.215, 0.610, 0.355, 1.000] }}
-              >
-                <Project {...project} index={index} />
-              </motion.div>
-            );
-          })}
-        </div>
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.1, ease: [0.215, 0.61, 0.355, 1] }}
+          className="text-4xl md:text-5xl font-extrabold text-white tracking-tight drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]"
+        >
+          Selected{" "}
+          <span className="bg-gradient-to-r from-violet-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent">
+            Projects
+          </span>
+        </motion.h2>
+
+        <motion.div
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.9, delay: 0.25, ease: [0.215, 0.61, 0.355, 1] }}
+          style={{ originX: 0 }}
+          className="mt-4 h-px w-full bg-gradient-to-r from-violet-600/60 via-neutral-700/40 to-transparent"
+        />
       </div>
+
+      {/* ── Stacked Cards Container ── */}
+      {/* Tall enough so each card gets its full scroll travel */}
+      <div
+        className="max-w-7xl mx-auto relative"
+        style={{
+          // Height = enough space for cards to stack:
+          // (n-1 cards × scroll_per_card) + one card height (approx 400px) + breathing room
+          minHeight: `${(myProjects.length - 1) * SCROLL_PER_CARD + 560}px`,
+        }}
+      >
+        {myProjects.map((project, index) => (
+          <StickyCard
+            key={project.id}
+            project={project}
+            index={index}
+            total={myProjects.length}
+          />
+        ))}
+      </div>
+
+      {/* Bottom breathing room */}
+      <div className="h-32" />
     </section>
   );
 };

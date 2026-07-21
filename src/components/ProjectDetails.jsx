@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { stopScroll, startScroll } from "../hooks/useLenis";
 
@@ -14,15 +14,56 @@ const ProjectDetails = ({
   const [currentImgIdx, setCurrentImgIdx] = useState(0);
   const hasMultipleImages = images && images.length > 1;
 
-  // Lock scroll when modal is open, unlock when closed
+  // Hover-pause state for the key highlights scroll
+  const [highlightsPaused, setHighlightsPaused] = useState(false);
+  const highlightsRef = useRef(null);
+  const isHoveredRef = useRef(false);
+  const scrollPosRef = useRef(0);
+
+  // JS Marquee logic for Key Highlights
+  useEffect(() => {
+    const el = highlightsRef.current;
+    if (!el) return;
+
+    let animationFrameId;
+    const scrollLoop = () => {
+      if (!isHoveredRef.current) {
+        scrollPosRef.current += 0.8; // increased scrolling speed
+        
+        // If we scrolled past half the height (since content is duplicated), seamlessly jump to top
+        if (scrollPosRef.current >= el.scrollHeight / 2) {
+          scrollPosRef.current -= el.scrollHeight / 2;
+        }
+        
+        el.scrollTop = scrollPosRef.current;
+      } else {
+        // When hovered, sync the reference position with manual scrolling
+        scrollPosRef.current = el.scrollTop;
+      }
+      animationFrameId = requestAnimationFrame(scrollLoop);
+    };
+
+    animationFrameId = requestAnimationFrame(scrollLoop);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, []);
+
+  const handleMouseEnter = () => {
+    isHoveredRef.current = true;
+    setHighlightsPaused(true);
+  };
+
+  const handleMouseLeave = () => {
+    isHoveredRef.current = false;
+    setHighlightsPaused(false);
+  };
+
+  // Lock page scroll when modal is open
   useEffect(() => {
     const originalOverflowBody = document.body.style.overflow;
     const originalOverflowHtml = document.documentElement.style.overflow;
-    
     document.body.style.overflow = "hidden";
     document.documentElement.style.overflow = "hidden";
     stopScroll();
-
     return () => {
       document.body.style.overflow = originalOverflowBody;
       document.documentElement.style.overflow = originalOverflowHtml;
@@ -30,7 +71,7 @@ const ProjectDetails = ({
     };
   }, []);
 
-  // Auto-slideshow inside the modal — cycles every 4 seconds
+  // Auto-slideshow — cycles every 4 s
   useEffect(() => {
     if (!hasMultipleImages) return;
     setCurrentImgIdx(0);
@@ -40,7 +81,7 @@ const ProjectDetails = ({
     return () => clearInterval(interval);
   }, [hasMultipleImages, images]);
 
-  // Handle escape key to close modal
+  // Escape key closes modal
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") closeModal();
@@ -49,9 +90,14 @@ const ProjectDetails = ({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [closeModal]);
 
+  const btnLabel = href.includes("kaggle.com")
+    ? "View Kaggle Notebook"
+    : href.includes("github.com")
+    ? "View Source Repository"
+    : "View Live Project";
 
   return (
-    <motion.div 
+    <motion.div
       className="fixed inset-0 z-50 flex items-center justify-center w-screen h-screen p-4 md:p-8 bg-black/90 backdrop-blur-xl"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -67,7 +113,7 @@ const ProjectDetails = ({
         transition={{ type: "spring", stiffness: 300, damping: 28 }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close Button: Styled to be bright white and highly visible */}
+        {/* ── Close button ── */}
         <button
           onClick={closeModal}
           className="absolute z-40 p-2.5 rounded-full top-5 right-5 bg-white/10 hover:bg-white/20 transition-all border border-white/25 text-white cursor-pointer hover:scale-105 flex items-center justify-center shadow-lg"
@@ -78,18 +124,16 @@ const ProjectDetails = ({
           </svg>
         </button>
 
-        {/* Top: Header Banner Section */}
-        <div className="px-6 pt-8 pb-4 border-b border-white/5 relative bg-gradient-to-r from-purple-500/5 to-transparent">
-          <div className="flex flex-col gap-1">
-            <span className="text-[10px] uppercase tracking-[0.2em] text-purple-400 font-bold">Project Spotlight</span>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-wide">{title}</h2>
-          </div>
+        {/* ── Header ── */}
+        <div className="px-6 pt-8 pb-4 border-b border-white/5 relative bg-gradient-to-r from-purple-500/5 to-transparent flex-shrink-0">
+          <span className="text-[10px] uppercase tracking-[0.2em] text-purple-400 font-bold">Project Spotlight</span>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-wide mt-1">{title}</h2>
         </div>
 
-        {/* Middle: Content Grid */}
+        {/* ── Content grid ── */}
         <div className="flex flex-col lg:grid lg:grid-cols-12 overflow-hidden flex-grow">
-          
-          {/* Left Column: Image Viewer (Col 7) */}
+
+          {/* Left: image viewer */}
           <div className="lg:col-span-7 relative bg-black/50 flex flex-col items-center justify-center p-4 border-b lg:border-b-0 lg:border-r border-white/5 min-h-[260px] md:min-h-[360px]">
             <div className="relative w-full h-full flex items-center justify-center overflow-hidden rounded-xl border border-white/5 bg-neutral-950/40 p-2 aspect-video">
               <AnimatePresence mode="wait">
@@ -107,7 +151,6 @@ const ProjectDetails = ({
 
               {hasMultipleImages && (
                 <>
-                  {/* Arrows */}
                   <button
                     onClick={() => setCurrentImgIdx((prev) => (prev === 0 ? images.length - 1 : prev - 1))}
                     className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-black/70 border border-white/10 text-white hover:bg-purple-600/30 hover:border-purple-500/30 transition-all z-30 cursor-pointer hover:scale-105"
@@ -117,7 +160,6 @@ const ProjectDetails = ({
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                     </svg>
                   </button>
-
                   <button
                     onClick={() => setCurrentImgIdx((prev) => (prev === images.length - 1 ? 0 : prev + 1))}
                     className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-black/70 border border-white/10 text-white hover:bg-purple-600/30 hover:border-purple-500/30 transition-all z-30 cursor-pointer hover:scale-105"
@@ -127,8 +169,7 @@ const ProjectDetails = ({
                       <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                     </svg>
                   </button>
-
-                  {/* Progress Line */}
+                  {/* Dot progress */}
                   <div className="absolute bottom-4 left-4 right-4 flex gap-1 z-30 bg-black/60 p-2 rounded-full border border-white/5 backdrop-blur-md justify-between items-center max-w-max mx-auto px-4">
                     <div className="flex gap-1.5">
                       {images.map((_, idx) => (
@@ -148,58 +189,60 @@ const ProjectDetails = ({
             </div>
           </div>
 
-          {/* Right Column: Project Info (Col 5) - Layout split to keep tech stack and link pinned at the bottom */}
-          <div className="lg:col-span-5 p-6 md:p-8 flex flex-col justify-between overflow-hidden h-full">
-            <div className="overflow-y-auto pr-2 flex-grow custom-scrollbar mb-4">
-              <h4 className="text-xs uppercase tracking-wider text-neutral-500 font-semibold mb-2">Overview</h4>
-              <p className="mb-4 text-xs md:text-sm text-neutral-300 leading-relaxed font-light">
-                {description}
-              </p>
+          {/* Right: Key Highlights (full height) + Tech Stack + CTA */}
+          <div className="lg:col-span-5 p-6 md:p-8 flex flex-col justify-between h-full overflow-hidden">
 
-              <h4 className="text-xs uppercase tracking-wider text-neutral-500 font-semibold mb-2">Key Highlights</h4>
-              <div className="relative h-[180px] overflow-hidden rounded-xl bg-black/10">
-                <style>{`
-                  @keyframes marquee-vertical {
-                    0% { transform: translateY(0); }
-                    100% { transform: translateY(-50%); }
-                  }
-                  .animate-marquee-vertical-projects {
-                    animation: marquee-vertical 24s linear infinite;
-                  }
-                  .animate-marquee-vertical-projects:hover {
-                    animation-play-state: paused;
-                  }
-                `}</style>
-                
-                {/* Visual fading masks at top/bottom */}
-                <div className="absolute inset-x-0 top-0 h-6 bg-gradient-to-b from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
-                <div className="absolute inset-x-0 bottom-0 h-6 bg-gradient-to-t from-[#040406] to-transparent z-10 pointer-events-none" />
+            {/* ── Key Highlights — fills all available space ── */}
+            <div className="flex flex-col flex-grow overflow-hidden mb-4">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-xs uppercase tracking-wider text-neutral-400 font-bold">Key Highlights</h4>
+              </div>
 
-                <div className="animate-marquee-vertical-projects flex flex-col gap-2.5 py-2">
-                  {[...subDescription, ...subDescription].map((subDesc, index) => (
-                    <div 
-                      key={index} 
-                      className="flex items-start gap-3 text-xs md:text-sm text-neutral-400 hover:text-white transition-colors duration-300 p-2.5 border border-white/[0.01] bg-white/[0.005] rounded-lg"
+              {/*
+                The outer div is the visible window (clips overflow).
+                The inner div handles the JS-based continuous scroll and allows manual scrolling when hovered.
+              */}
+              <div
+                className="relative flex-grow overflow-hidden rounded-xl"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              >
+                {/* Top fade mask */}
+                <div className="absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
+                {/* Bottom fade mask */}
+                <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-[#040406] to-transparent z-10 pointer-events-none" />
+
+                {/* JS Marquee container */}
+                <div
+                  ref={highlightsRef}
+                  className="flex flex-col gap-3 py-3 pr-1 h-full overflow-y-auto no-scrollbar"
+                >
+                  {/* Double the list so the scroll loops seamlessly */}
+                  {[...subDescription, ...subDescription].map((subDesc, i) => (
+                    <div
+                      key={i}
+                      className="flex items-start gap-3 text-sm text-neutral-300 hover:text-white transition-colors duration-300 p-3 border border-white/[0.04] bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/10 rounded-xl cursor-default"
                     >
-                      <span className="mt-1.5 flex-shrink-0 w-1.5 h-1.5 rounded-full bg-purple-500 shadow-[0_0_8px_#a855f7]" />
+                      <span className="mt-1.5 flex-shrink-0 w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_8px_#a855f7]" />
                       <p className="leading-relaxed font-light">{subDesc}</p>
                     </div>
                   ))}
-                  {/* Mathematical spacer matching gap-2.5 to eliminate looping jump */}
-                  <div className="h-2.5 flex-shrink-0" />
+                  {/* Spacer to eliminate the loop jump */}
+                  <div className="h-3 flex-shrink-0" />
                 </div>
               </div>
             </div>
 
-            <div className="pt-4 border-t border-white/5 flex-shrink-0 bg-[#040406]/30">
+            {/* ── Bottom: Tech Stack + CTA ── */}
+            <div className="pt-4 border-t border-white/5 flex-shrink-0">
               <h4 className="text-xs uppercase tracking-wider text-neutral-500 font-semibold mb-2">Tech Stack</h4>
               <div className="flex flex-wrap gap-1.5 mb-4">
                 {tags.map((tag) => (
-                  <div 
-                    key={tag.id} 
-                    className="flex items-center gap-1.5 px-2.5 py-1 bg-white/[0.03] border border-white/[0.08] hover:border-purple-500/20 hover:bg-purple-500/5 transition-all duration-300 rounded-lg text-xs text-neutral-300"
+                  <div
+                    key={tag.id}
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white/[0.03] border border-white/[0.08] hover:border-purple-500/20 hover:bg-purple-500/5 transition-all duration-300 rounded-lg text-xs text-neutral-300"
                   >
-                    {tag.path && <img src={tag.path} alt={tag.name} className="w-3.5 h-3.5" />}
+                    {tag.path && <img src={tag.path} alt={tag.name} className="w-4 h-4" />}
                     <span>{tag.name}</span>
                   </div>
                 ))}
@@ -209,14 +252,15 @@ const ProjectDetails = ({
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 font-semibold text-sm rounded-2xl bg-purple-600 text-white hover:bg-purple-500 transition-all duration-300 shadow-xl shadow-purple-600/10 hover:translate-y-[-2px] cursor-pointer"
+                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 font-semibold text-sm rounded-2xl bg-purple-600 text-white hover:bg-purple-500 transition-all duration-300 shadow-xl shadow-purple-600/10 hover:translate-y-[-2px] cursor-pointer"
               >
-                <span>{href.includes("kaggle.com") ? "View Kaggle Notebook" : href.includes("github.com") ? "View Source Repository" : "View Live Project"}</span>
-                <img src="/assets/arrow-up.svg" className="w-3.5 h-3.5 invert" alt="arrow" />
+                <span>{btnLabel}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
               </a>
             </div>
           </div>
-          
         </div>
       </motion.div>
     </motion.div>

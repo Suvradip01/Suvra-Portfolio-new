@@ -4,9 +4,9 @@ import Hero from "./sections/Hero";
 
 import About from "./sections/About";
 import Projects from "./sections/Projects";
-import Experiences from "./sections/Experiences";
 import Contact from "./sections/Contact";
 import Footer from "./sections/Footer";
+import { TransitionBridge } from "./components/TransitionBridge";
 import { useLenis } from "./hooks/useLenis";
 import { usePortfolioStore } from "./store/usePortfolioStore";
 
@@ -21,12 +21,10 @@ const App = () => {
   const {
     renderAbout,
     renderProjects,
-    renderExperiences,
     renderContact,
     renderAllImmediately,
     setRenderAbout,
     setRenderProjects,
-    setRenderExperiences,
     setRenderContact,
   } = usePortfolioStore();
 
@@ -53,12 +51,8 @@ const App = () => {
       }, delayStart + STAGGER_GAP));
 
       timers.push(setTimeout(() => {
-        startTransition(() => setRenderExperiences(true));
-      }, delayStart + STAGGER_GAP * 2));
-
-      timers.push(setTimeout(() => {
         startTransition(() => setRenderContact(true));
-      }, delayStart + STAGGER_GAP * 3));
+      }, delayStart + STAGGER_GAP * 2));
     };
 
     // Idle-load sections sequentially after Hero animations have completed (around 2.2s)
@@ -83,22 +77,28 @@ const App = () => {
       timers.forEach(clearTimeout);
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [renderAllImmediately, setRenderAbout, setRenderProjects, setRenderExperiences, setRenderContact]);
+  }, [renderAllImmediately, setRenderAbout, setRenderProjects, setRenderContact]);
 
   return (
-    <div className="container mx-auto max-w-7xl">
-      <Navbar />
-      <Hero />
-      {renderAbout && <About />}
-      {renderProjects && <Projects />}
-      {renderExperiences && <Experiences />}
-      {renderContact && (
-        <>
-          <Contact />
-          <Footer />
-        </>
-      )}
-    </div>
+    <>
+      <div className="container mx-auto max-w-7xl">
+        <Navbar />
+        <Hero />
+        {renderAbout && <About />}
+        {renderProjects && <Projects />}
+      </div>
+      
+      {renderProjects && <TransitionBridge />}
+      
+      <div className="container mx-auto max-w-7xl">
+        {renderContact && (
+          <>
+            <Contact />
+            <Footer />
+          </>
+        )}
+      </div>
+    </>
   );
 };
 

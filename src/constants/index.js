@@ -3,12 +3,13 @@ export const myProjects = [
     id: 1,
     title: "Insight-ATS",
     description:
-      "AI-Assisted Hiring and Project-Based Evaluation Platform — a full-stack ATS with 3 transformer models for entity extraction, resume–JD matching, and SHAP explainability.",
+      "AI Hiring Support Platform extending traditional ATS systems with contextual Resume–JD matching, project evaluation, and explainable candidate assessment.",
+
     subDescription: [
-      "Built a full-stack AI candidate-evaluation ATS platform with a FastAPI backend integrating 3 transformer models for entity extraction, Resume–JD matching, extended project complexity scoring, and SHAP explainability.",
-      "Fine-tuned and evaluated 3 models: BERT-NER entity extractor (1000 resumes, 0.75 F1), RoBERTa resume–JD semantic matcher (8000 resume–JD pairs, 0.78 Macro F1), and DistilBERT project-complexity evaluator (0.93 Macro F1) using 3×5 repeated K-Fold validation.",
-      "Optimized multi-resume inference latency by 51.1% (6.62s to 3.24s) by designing a FastAPI pipeline with lazy loaded singleton orchestration and in-memory cached model instances serving 4-dimensional ATS scores.",
-      "Reduced client-to-backend API calls by 40% via shared-JD batch screening and deployed the system as a production full-stack application with Clerk authentication on Hugging Face Spaces."
+      "Built an AI hiring platform integrating project evaluation, contextual Resume–JD matching, and resume parsing beyond keyword-based ATS screening.",
+      "Fine-tuned BERT, RoBERTa, and DistilBERT models, achieving 0.75 F1 and 0.78, 0.93 Macro F1 for entity extraction, semantic matching, and project evaluation.",
+      "Reduced inference latency by 51% (6.62s → 3.24s) using FastAPI lazy loading, singleton model orchestration, and Redis caching.",
+      "Reduced client-to-server API requests by 90% through shared Job Description batch processing with Redux-managed screening workflows."
     ],
     href: "https://ai-resume-analyzer-ats-six.vercel.app/",
     liveHref: "",
@@ -22,21 +23,27 @@ export const myProjects = [
     ],
     tags: [
       { id: 1, name: "React.js", path: "/assets/logos/react.svg" },
-      { id: 2, name: "FastAPI", path: "/assets/logos/fastapi.svg" },
-      { id: 3, name: "PyTorch", path: "/assets/logos/pytorch.svg" },
-      { id: 4, name: "Python", path: "/assets/logos/python.svg" },
+      { id: 2, name: "Redux", path: "/assets/logos/redux.svg" },
+      { id: 3, name: "FastAPI", path: "/assets/logos/fastapi.svg" },
+      { id: 4, name: "Redis", path: "/assets/logos/redis.svg" },
+      { id: 5, name: "Python", path: "/assets/logos/python.svg" },
+      { id: 6, name: "PyTorch", path: "/assets/logos/pytorch.svg" },
+      { id: 7, name: "Scikit-learn", path: "/assets/logos/scikitlearn.svg" },
+      { id: 8, name: "Clerk", path: "/assets/logos/clerk.svg" },
+      { id: 9, name: "JWT", path: "/assets/logos/jwt.svg" },
     ],
   },
   {
     id: 2,
     title: "CodeNest",
     description:
-      "AI-Powered Cloud IDE and Review Platform — a microservice-based cloud IDE supporting 20+ concurrent users executing code in isolated Docker containers with AI-assisted reviews.",
+      "AI-powered Cloud IDE with secure Docker-based code execution, AI-assisted code review, debugging, and software visualization.",
+
     subDescription: [
-      "Built a microservice-based cloud IDE supporting 20+ concurrent users, executing JavaScript, Python, Java, and C in isolated Docker containers with resource quotas, network restrictions, and 5-second execution timeouts.",
-      "Engineered a queue-based execution system with a 25-job buffer and 2 worker processes to prevent resource exhaustion and ensure reliable code execution under concurrent workloads.",
-      "Integrated Groq-hosted Llama-3.3-70B for AI-assisted code reviews, debugging, Mermaid flowchart generation, and code analysis with 1–3 second response latency.",
-      "Implemented SHA-256 response caching, a 20 requests/minute rate limit, and a Redis-backed rate limiter with in-memory failover; deployed the platform and execution runner on Render."
+      "Built a cloud IDE supporting 20+ concurrent users with isolated Docker-based code execution and 5-second execution timeouts.",
+      "Engineered an asynchronous execution pipeline using a 25-job queue and worker processes for reliable concurrent execution.",
+      "Integrated Llama-3.3-70B for AI-assisted code review, debugging, code generation, and Mermaid flowchart visualization.",
+      "Reduced AI response latency to 1–3 seconds using Redis caching, SHA-256 cache keys, secure rate limiting, and in-memory fallback."
     ],
     href: "https://code-nest-swart.vercel.app/",
     liveHref: "",
@@ -48,21 +55,55 @@ export const myProjects = [
     ],
     tags: [
       { id: 1, name: "React.js", path: "/assets/logos/react.svg" },
-      { id: 2, name: "Express.js", path: "/assets/logos/expressjs.svg" },
-      { id: 3, name: "MongoDB", path: "/assets/logos/mongodb.svg" },
-      { id: 4, name: "Docker", path: "/assets/logos/docker.svg" },
+      { id: 2, name: "Zustand", path: "/assets/logos/zustand.svg" },
+      { id: 3, name: "Node.js", path: "/assets/logos/nodejs.svg" },
+      { id: 4, name: "Express.js", path: "/assets/logos/expressjs.svg" },
+      { id: 5, name: "MongoDB", path: "/assets/logos/mongodb.svg" },
+      { id: 6, name: "Docker", path: "/assets/logos/docker.svg" },
+      { id: 7, name: "Groq", path: "/assets/logos/groq.svg" },
+      { id: 8, name: "JWT", path: "/assets/logos/jwt.svg" },
     ],
   },
   {
     id: 3,
+    title: "AI-Powered CSV Import Platform",
+    description: "AI-powered CSV import platform that transforms unstructured spreadsheets into validated CRM-ready records.",
+    subDescription: [
+      "Built an intelligent CSV import platform with adaptive AI processing and automated field mapping.",
+      "Transformed unstructured spreadsheets into validated CRM-ready records while minimizing unnecessary LLM usage.",
+      "Implemented streaming import workflows with real-time validation and progress updates using Server-Sent Events.",
+      "Developed using React, Express.js, MongoDB, Redis, and Google Gemini with cloud deployment on Vercel and Render."
+    ],
+    href: "",
+    liveHref: "",
+    images: [
+      "/assets/projects/CSV proj/2026-07-21 14 46 29.png",
+      "/assets/projects/CSV proj/2026-07-21 14 47 31.png",
+      "/assets/projects/CSV proj/2026-07-21 14 48 42.png",
+      "/assets/projects/CSV proj/2026-07-21 14 49 15.png",
+      "/assets/projects/CSV proj/2026-07-21 14 49 57.png"
+    ],
+    tags: [
+      { id: 1, name: "Next.js", path: "/assets/logos/nextjs.svg" },
+      { id: 2, name: "Node.js", path: "/assets/logos/nodejs.svg" },
+      { id: 3, name: "Express.js", path: "/assets/logos/expressjs.svg" },
+      { id: 4, name: "Nginx", path: "/assets/logos/nginx.svg" },
+      { id: 5, name: "Redis", path: "/assets/logos/redis.svg" },
+      { id: 6, name: "Docker", path: "/assets/logos/docker.svg" },
+      { id: 7, name: "Google Gemini", path: "/assets/logos/gemini.svg" },
+    ],
+  },
+  {
+    id: 4,
     title: "Skin Disease Detection",
     description:
-      "CNN-based skin lesion classification system on the HAM10000 dataset — achieving 90% test accuracy across 3 disease classes using EfficientNetB3 with transfer learning.",
+      "Deep learning-based skin lesion classification system for early melanoma detection using Computer Vision.",
+
     subDescription: [
-      "Created a skin lesion classification pipeline on the HAM10000 dataset containing 10,015 dermatoscopic images and restructured labels into 3 classes: benign, melanoma, and non-melanoma.",
-      "Prevented data leakage through patient-id based train-validation-test splitting and used a dual-stream preprocessing pipeline using CLAHE enhancement and black-hat morphology-based hair removal.",
-      "Fine-tuned EfficientNetB3 using transfer learning, Focal Loss, Adam optimization, and Test-Time Augmentation.",
-      "Achieved 90% test accuracy with F1-scores of 0.89 (benign), 0.86 (melanoma), and 0.94 (non-melanoma), and evaluated performance using confusion matrices and per-class precision/recall analysis."
+      "Developed a skin lesion classification system using the HAM10000 dataset with 10,015 dermoscopic images.",
+      "Improved model reliability using patient-wise data splitting, CLAHE enhancement, hair-removal preprocessing, and EfficientNetB3 transfer learning.",
+      "Applied Focal Loss and Test-Time Augmentation to improve generalization across lesion categories.",
+      "Achieved 90% test accuracy with F1-scores of 0.89, 0.86, and 0.94 across benign, melanoma, and non-melanoma classes."
     ],
     href: "https://www.kaggle.com/code/suvradipghosh/skindiseasedetection-using-cnn",
     liveHref: "",
@@ -76,18 +117,22 @@ export const myProjects = [
       { id: 2, name: "TensorFlow", path: "/assets/logos/tensorflow.svg" },
       { id: 3, name: "Scikit-learn", path: "/assets/logos/scikitlearn.svg" },
       { id: 4, name: "OpenCV", path: "/assets/logos/opencv.svg" },
+      { id: 5, name: "NumPy", path: "/assets/logos/numpy.svg" },
+      { id: 6, name: "Pandas", path: "/assets/logos/pandas.svg" },
+      { id: 7, name: "Matplotlib", path: "/assets/logos/matplotlib.svg" },
     ],
   },
   {
-    id: 4,
+    id: 5,
     title: "Luminist",
     description:
-      "AI-Powered Photo Editor Web App — combining familiar editing tools with background removal, enhancements, and simple generative actions in browser.",
+      "AI-powered photo editing platform with intelligent editing tools, cloud storage, and project management.",
+
     subDescription: [
-      "Supports background removal, basic enhancements, and simple generative actions directly in the browser.",
-      "Manages multiple projects, organizes work into folders, and stores edited images through cloud services.",
-      "Includes secure login via Clerk, project limits based on subscription level, and a dark comfortable interface.",
-      "Built with Next.js, React, Convex, Clerk, and ImageKit for reliable performance and straightforward editing."
+      "Built a browser-based photo editor supporting AI-powered image enhancement and background removal.",
+      "Integrated cloud storage, project organization, and folder-based media management.",
+      "Implemented secure authentication, subscription-aware usage limits, and responsive editing workflows.",
+      "Developed using Next.js, Convex, Clerk, and ImageKit for scalable image management."
     ],
     href: "https://luminist-s.vercel.app/",
     liveHref: "",
@@ -100,19 +145,21 @@ export const myProjects = [
       { id: 1, name: "Next.js", path: "/assets/logos/react.svg" },
       { id: 2, name: "Tailwind", path: "/assets/logos/tailwindcss.svg" },
       { id: 3, name: "TypeScript", path: "/assets/logos/javascript.svg" },
-      { id: 4, name: "MongoDB", path: "/assets/logos/mongodb.svg" },
+      { id: 4, name: "Convex", path: "/assets/logos/convex.svg" },
+      { id: 5, name: "Clerk", path: "/assets/logos/clerk.svg" },
     ],
   },
   {
-    id: 5,
+    id: 6,
     title: "Interference Detection",
     description:
-      "CNN-Based Image Classification System for automatic interference detection (Clean vs Interference images) using Deep Learning and Computer Vision.",
+      "Deep learning-based system that classifies scanned examination papers as Clean or Interference before automated evaluation.",
+
     subDescription: [
-      "Developed a Conv2D, Batch Normalization, and MaxPooling CNN model with approximately 8.48 million trainable parameters.",
-      "Applied Gaussian Blur, CLAHE contrast enhancement, RGB to LAB conversion, and image normalization preprocessing.",
-      "Used stratified sampling to split dataset into 70% train, 15% validation, and 15% test sets.",
-      "Achieved 92% overall test accuracy, 97% recall for interference detection, and 91% Macro F1-Score."
+      "Developed a computer vision system that detects hands and visual obstructions before automated examination paper evaluation.",
+      "Designed an 8.48M-parameter CNN using Conv2D, Batch Normalization, and MaxPooling for Clean vs Interference classification.",
+      "Improved feature extraction using Gaussian Blur, CLAHE enhancement, LAB color conversion, and normalized preprocessing.",
+      "Achieved 92% test accuracy, 97% recall, and 91% Macro F1-score using optimized preprocessing and stratified dataset splitting."
     ],
     href: "https://www.kaggle.com/code/suvradipghosh/merittracknotebookv1",
     liveHref: "",
@@ -126,6 +173,9 @@ export const myProjects = [
       { id: 2, name: "TensorFlow", path: "/assets/logos/tensorflow.svg" },
       { id: 3, name: "OpenCV", path: "/assets/logos/opencv.svg" },
       { id: 4, name: "Scikit-learn", path: "/assets/logos/scikitlearn.svg" },
+      { id: 5, name: "NumPy", path: "/assets/logos/numpy.svg" },
+      { id: 6, name: "Pandas", path: "/assets/logos/pandas.svg" },
+      { id: 7, name: "Matplotlib", path: "/assets/logos/matplotlib.svg" },
     ],
   },
 ];
