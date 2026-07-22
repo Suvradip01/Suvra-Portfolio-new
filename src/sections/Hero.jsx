@@ -48,6 +48,58 @@ const Hero = () => {
       {/* Overlay for contrast */}
       <div className="absolute inset-0 bg-black/40 -z-40" />
 
+      {/* Vertical Sidebar Nav (Right Side) */}
+      <div className="fixed right-6 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col items-center pointer-events-auto">
+        <div className="flex flex-col items-center">
+          {[
+            {
+              name: "GITHUB",
+              href: "https://github.com/your-github",
+            },
+            {
+              name: "LINKEDIN",
+              href: "https://linkedin.com/in/your-linkedin",
+            },
+            {
+              name: "EMAIL",
+              href: "#contact",
+            },
+          ].map((item, index, arr) => (
+            <div key={item.name} className="flex flex-col items-center">
+              <a
+                href={item.href}
+                target={item.href.startsWith("http") ? "_blank" : "_self"}
+                rel="noreferrer"
+                className="
+            uppercase
+            [writing-mode:vertical-lr]
+            rotate-180
+            text-[13px]
+            font-semibold
+            tracking-[0.35em]
+            text-white
+            transition-all
+            duration-300
+            hover:text-[#00ffff]
+            hover:scale-110
+          "
+                style={{
+                  textShadow:
+                    "0 0 8px rgba(255,255,255,0.9), 0 0 18px rgba(255,255,255,0.45)",
+                }}
+              >
+                {item.name}
+              </a>
+
+              {/* Connector Line */}
+              {index !== arr.length - 1 && (
+                <div className="w-px h-12 my-6 bg-white/40" />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Hero text */}
       <HeroText />
 

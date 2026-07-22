@@ -38,8 +38,34 @@ const Navbar = () => {
     <>
       {/* Navbar */}
       <div className="fixed inset-x-0 top-0 z-50 w-full pt-3 px-4 sm:px-6 lg:px-8 pointer-events-auto">
-        <div className="mx-auto max-w-7xl px-6 py-2.5 rounded-2xl bg-[#000000]/85 backdrop-blur-xl border border-white/15 shadow-2xl transition-all duration-300">
-          <div className="flex items-center justify-between">
+        <div className="relative mx-auto max-w-7xl px-6 py-2.5 rounded-2xl overflow-hidden border border-white shadow-2xl transition-all duration-300" style={{ minHeight: '80px', background: 'black' }}>
+
+          {/* Blackhole Video Background inside Navbar Pill */}
+          <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none" style={{ zIndex: 0 }}>
+            <video
+              src="/assets/blackhole.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+              className="
+    absolute
+    left-1/2
+    top-100%
+    w-full
+    h-[700px]
+    object-cover
+    -translate-x-1/2
+    -translate-y-1/2
+    scale-[0.5]
+    transform-gpu
+    will-change-transform
+  "
+            />
+          </div>
+
+          <div className="flex items-center justify-between relative z-10">
 
             {/* Brand */}
             <a
