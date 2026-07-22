@@ -1,7 +1,6 @@
-import React, { startTransition, useEffect } from "react";
+import React, { useEffect } from "react";
 import Navbar from "./sections/Navbar";
-import Hero from "./sections/Hero";
-
+import { HeroStackWrapper } from "./components/HeroStackWrapper";
 import About from "./sections/About";
 import Projects from "./sections/Projects";
 import Contact from "./sections/Contact";
@@ -10,93 +9,42 @@ import { TransitionBridge } from "./components/TransitionBridge";
 import { useLenis } from "./hooks/useLenis";
 import { usePortfolioStore } from "./store/usePortfolioStore";
 
-// ⚡ Perf: Stagger gap between section mounts (ms).
-// 350ms gives the browser a full frame budget to layout+paint each section
-// before the next one starts mounting — eliminates the "mount storm" during first scroll.
-const STAGGER_GAP = 350;
-
 const App = () => {
-  useLenis();          // 🌊 Initialise Lenis smooth scroll for the whole page
+  useLenis();          // 🌊 Initialise Lenis smooth scroll for desktop
 
-  const {
-    renderAbout,
-    renderProjects,
-    renderContact,
-    renderAllImmediately,
-    setRenderAbout,
-    setRenderProjects,
-    setRenderContact,
-  } = usePortfolioStore();
+  const { renderAllImmediately } = usePortfolioStore();
 
   useEffect(() => {
-    // If user loaded page already scrolled down, render everything immediately
-    if (window.scrollY > 10) {
-      renderAllImmediately();
-      return;
-    }
-
-    // Timers to hold all the staggered mounts so we can cancel them on cleanup
-    const timers = [];
-
-    // ⚡ Perf: Each section gets its OWN startTransition so React Concurrent Mode
-    // can yield to user input (scroll, touch) between each mount.
-    // Raw setTimeout inside the store bypassed this — now properly controlled here.
-    const scheduleStaggered = (delayStart = 0) => {
-      timers.push(setTimeout(() => {
-        startTransition(() => setRenderAbout(true));
-      }, delayStart));
-
-      timers.push(setTimeout(() => {
-        startTransition(() => setRenderProjects(true));
-      }, delayStart + STAGGER_GAP));
-
-      timers.push(setTimeout(() => {
-        startTransition(() => setRenderContact(true));
-      }, delayStart + STAGGER_GAP * 2));
-    };
-
-    // Idle-load sections sequentially after Hero animations have completed (around 2.2s)
-    const idleTimer = setTimeout(() => {
-      scheduleStaggered(0);
-    }, 2200);
-    timers.push(idleTimer);
-
-    // Force staggered render of everything if the user scrolls before the idle timers fire.
-    const handleScroll = () => {
-      // Cancel the idle-load timer and all pending stagger timers
-      timers.forEach(clearTimeout);
-      timers.length = 0;
-      // Use a shorter delay when triggered by scroll — still staggered but faster start
-      scheduleStaggered(0);
-      window.removeEventListener("scroll", handleScroll);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
-    return () => {
-      timers.forEach(clearTimeout);
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [renderAllImmediately, setRenderAbout, setRenderProjects, setRenderContact]);
+    renderAllImmediately();
+  }, [renderAllImmediately]);
 
   return (
     <>
-      <div className="container mx-auto max-w-7xl">
-        <Navbar />
-        <Hero />
-        {renderAbout && <About />}
-        {renderProjects && <Projects />}
+      <Navbar />
+
+      {/* ── PARALLAX STACKED CARD: HERO ➔ ABOUT ── */}
+      <div className="relative w-full">
+        {/* 1. Sticky Hero section pinned underneath (h-[200vh] track) */}
+        <HeroStackWrapper />
+
+        {/* 2. About section card moving UPWARD from bottom of viewport over Hero */}
+        <div className="relative z-10 -mt-[100vh] bg-[#000000] rounded-t-[32px] md:rounded-t-[48px] border-t border-white/15 shadow-[0_-35px_90px_rgba(0,0,0,0.98)] transform-gpu">
+          <div className="container mx-auto max-w-7xl">
+            <About />
+          </div>
+        </div>
       </div>
-      
-      {renderProjects && <TransitionBridge />}
-      
+
+      {/* ── NORMAL SCROLLING RESUMES FOR ALL SUBSEQUENT SECTIONS ── */}
+      <div className="container mx-auto max-w-7xl relative z-10 bg-[#000000]">
+        <Projects />
+      </div>
+
+      <TransitionBridge />
+
       <div className="container mx-auto max-w-7xl">
-        {renderContact && (
-          <>
-            <Contact />
-            <Footer />
-          </>
-        )}
+        <Contact />
+        <Footer />
       </div>
     </>
   );

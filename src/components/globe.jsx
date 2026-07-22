@@ -9,15 +9,15 @@ import { twMerge } from "tailwind-merge";
 const MOVEMENT_DAMPING = 500;
 
 const GLOBE_CONFIG = {
-  width: 800,
-  height: 800,
+  width: 600,
+  height: 600,
   onRender: () => { },
-  devicePixelRatio: typeof window !== "undefined" ? Math.min(window.devicePixelRatio, 1.8) : 1,
+  devicePixelRatio: typeof window !== "undefined" ? Math.min(window.devicePixelRatio, 1.25) : 1,
   phi: 0,
   theta: 0.15,
   dark: 1,
   diffuse: 0.4,
-  mapSamples: 16000,
+  mapSamples: 8000,
   mapBrightness: 1.2,
   baseColor: [1, 1, 1],
   markerColor: [1, 1, 1],
@@ -38,10 +38,10 @@ const GLOBE_CONFIG = {
 
 export function Globe({ className, config = GLOBE_CONFIG }) {
   let phi = 0;
-  let width = 0;
   const canvasRef = useRef(null);
   const pointerInteracting = useRef(null);
   const pointerInteractionMovement = useRef(0);
+  const globeRef = useRef(null);
 
   const r = useMotionValue(0);
   const rs = useSpring(r, {
@@ -66,16 +66,10 @@ export function Globe({ className, config = GLOBE_CONFIG }) {
   };
 
   useEffect(() => {
-    const onResize = () => {
-      if (canvasRef.current) {
-        width = canvasRef.current.offsetWidth;
-      }
-    };
+    if (!canvasRef.current) return;
 
-    window.addEventListener("resize", onResize);
-    onResize();
+    let width = canvasRef.current.offsetWidth || 400;
 
-    // Optimize: Pause globe rendering when off-screen or tab is backgrounded
     let isVisible = true;
     let isTabVisible = true;
 
@@ -90,41 +84,51 @@ export function Globe({ className, config = GLOBE_CONFIG }) {
       },
       { threshold: 0.05 }
     );
-    if (canvasRef.current) observer.observe(canvasRef.current);
+    observer.observe(canvasRef.current);
 
-    const globe = createGlobe(canvasRef.current, {
-      ...config,
-      width: Math.round(width * 1.35),
-      height: Math.round(width * 1.35),
-      onRender: (state) => {
-        if (!isVisible || !isTabVisible) return; // skip render work when not visible
-        if (!pointerInteracting.current) phi += 0.012;
-        state.phi = phi + rs.get();
-        const currentW = Math.round(width * 1.35);
-        state.width = currentW;
-        state.height = currentW;
-      },
-    });
+    let globeInstance = null;
 
-    setTimeout(() => (canvasRef.current.style.opacity = "1"), 0);
+    try {
+      globeInstance = createGlobe(canvasRef.current, {
+        ...GLOBE_CONFIG,
+        width: Math.round(width * 1.2),
+        height: Math.round(width * 1.2),
+        onRender: (state) => {
+          if (!isVisible || !isTabVisible) return;
+          if (!pointerInteracting.current) phi += 0.008;
+          state.phi = phi + rs.get();
+        },
+      });
+      globeRef.current = globeInstance;
+    } catch (err) {
+      console.warn("WebGL initialization skipped:", err);
+    }
+
+    if (canvasRef.current) {
+      canvasRef.current.style.opacity = "1";
+    }
+
     return () => {
-      globe.destroy();
-      window.removeEventListener("resize", onResize);
+      if (globeInstance) {
+        try {
+          globeInstance.destroy();
+        } catch (_) {}
+      }
       document.removeEventListener("visibilitychange", handleVisibility);
       observer.disconnect();
     };
-  }, [rs, config]);
+  }, []); //  Run ONCE on mount to prevent WebGL Context Loss
 
   return (
     <div
       className={twMerge(
-        "mx-auto aspect-[1/1] w-full max-w-[600px]",
+        "mx-auto aspect-[1/1] w-full max-w-[600px] transform-gpu contain-strict",
         className
       )}
     >
       <canvas
         className={twMerge(
-          "size-[26rem] max-w-full opacity-0 transition-opacity duration-500 [contain:layout_paint_size]"
+          "size-[26rem] max-w-full opacity-0 transition-opacity duration-500 transform-gpu [contain:layout_paint_size] touch-pan-y"
         )}
         ref={canvasRef}
         onPointerDown={(e) => {

@@ -9,6 +9,7 @@ import { Particles } from "../components/Particles";
 const About = () => {
   const grid2Container = useRef();
   const grid2VideoRef = useRef(null); // ref to pause cont-bg.mp4 when off-screen
+  const globeContainerRef = useRef(null); // ref to mount/unmount globe via IntersectionObserver
   const [activeGrid, setActiveGrid] = useState(null);
   const [showGlobe, setShowGlobe] = useState(false);
   const [isTouch, setIsTouch] = useState(false); //  Detect mobile/touch device
@@ -20,32 +21,26 @@ const About = () => {
     }
   }, []);
 
-  // Lazy-load globe after first render for smoother first paint
+  // Mount Globe only when the Time Zone card is actually in view.
+  // This prevents two WebGL contexts (Hero astronaut + globe) from being alive simultaneously,
+  // which causes WebGL context loss and scroll performance degradation.
   useEffect(() => {
-    const timer = setTimeout(() => setShowGlobe(true), 300);
-    return () => clearTimeout(timer);
-  }, []);
+    const el = globeContainerRef.current;
+    if (!el) return;
 
-  // Pause the background video when it scrolls off-screen to save CPU/GPU decode
-  useEffect(() => {
-    const video = grid2VideoRef.current;
-    if (!video) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          video.play().catch(() => { });
-        } else {
-          video.pause();
-        }
+        setShowGlobe(entry.isIntersecting);
       },
       { threshold: 0.1 }
     );
-    observer.observe(video);
+    observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
+
+
   const frameworks = useMemo(() => <Frameworks />, []);
-  const globe = useMemo(() => <Globe />, []);
 
   const glowStyle = useMemo(
     () => ({
@@ -104,18 +99,13 @@ const About = () => {
             onMouseLeave={handleGridLeave}
             onClick={() => handleGridClick(2)}
           >
-            {/* Background Video — paused when off-screen via IntersectionObserver */}
-            <video
-              ref={grid2VideoRef}
-              src="/assets/cont-bg.mp4"
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="none"
+            {/* Background Image */}
+            <img
+              src="/assets/skillimage.png"
+              alt="skills background"
               className="absolute inset-0 w-full h-full object-cover -z-10 opacity-100"
             />
-            {/* Dark semi-transparent tint overlay on top of the video */}
+            {/* Dark semi-transparent tint overlay on top of the image */}
             <div className="absolute inset-0 bg-black/20 pointer-events-none -z-10" />
             <div
               ref={grid2Container}
@@ -149,6 +139,7 @@ const About = () => {
 
           {/* Grid 3 */}
           <div
+            ref={globeContainerRef}
             className="grid-black-color grid-3 relative overflow-hidden hover:scale-[1.001] transform-gpu"
             style={activeGrid === 3 ? glowStyle : {}}
             onMouseEnter={() => handleGridEnter(3)}
@@ -165,7 +156,7 @@ const About = () => {
             </div>
             {showGlobe && (
               <figure className="absolute left-[37%] top-[-10%] w-full h-[104%] transform-gpu pointer-events-auto">
-                {globe}
+                <Globe />
               </figure>
             )}
           </div>

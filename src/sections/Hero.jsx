@@ -32,17 +32,18 @@ const Hero = () => {
       id="home"
       className="flex items-start justify-center min-h-screen overflow-hidden md:items-start md:justify-start c-space"
     >
-      {/* Background Video temporarily commented out to test performance
-      <video
-        src="/assets/video-stars.mp4"
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload={isMobile ? "none" : "auto"}
-        className="absolute inset-0 w-full h-full object-cover -z-50"
-      />
-      */}
+      {/* Background Video (cont-bg.mp4) */}
+      <div className="blackhole-box">
+        <video
+          src="/assets/cont-bg.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          className="pointer-events-none select-none"
+        />
+      </div>
 
       {/* Overlay for contrast */}
       <div className="absolute inset-0 bg-black/40 -z-40" />

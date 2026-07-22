@@ -32,28 +32,49 @@
   --animate-marquee-vertical: marquee-vertical 50s linear infinite;
 
   @keyframes marquee {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-33.333%); }
+    0% {
+      transform: translateX(0);
+    }
+
+    100% {
+      transform: translateX(-33.333%);
+    }
   }
 
   @keyframes marquee-reverse {
-    0%   { transform: translateX(-33.333%); }
-    100% { transform: translateX(0); }
+    0% {
+      transform: translateX(-33.333%);
+    }
+
+    100% {
+      transform: translateX(0);
+    }
   }
 
   @keyframes marquee-vertical {
-    0%   { transform: translateY(0); }
-    100% { transform: translateY(-50%); }
+    0% {
+      transform: translateY(0);
+    }
+
+    100% {
+      transform: translateY(-50%);
+    }
   }
 
   @keyframes radar-spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
   }
 }
 
 /* Lenis smooth scroll recommended styles */
-html.lenis, html.lenis body {
+html.lenis,
+html.lenis body {
   height: auto;
 }
 
@@ -144,9 +165,12 @@ body.is-scrolling {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 .section-spacing {
@@ -238,10 +262,11 @@ body.is-scrolling {
   top: 0;
   left: 0;
   width: 100%;
-  height: 115%;
+  height: 100%;
   overflow: hidden;
   z-index: -1;
   mix-blend-mode: lighten;
+  pointer-events: none;
 }
 
 .blackhole-box video {
@@ -249,7 +274,9 @@ body.is-scrolling {
   height: 100%;
   object-fit: cover;
   object-position: center center;
-  transform: none;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -258,8 +285,13 @@ body.is-scrolling {
 
 /* ── Rotating conic-gradient animation ── */
 @keyframes border-spin {
-  0%   { --border-angle: 0deg; }
-  100% { --border-angle: 360deg; }
+  0% {
+    --border-angle: 0deg;
+  }
+
+  100% {
+    --border-angle: 360deg;
+  }
 }
 
 @property --border-angle {
@@ -276,21 +308,19 @@ body.is-scrolling {
   border-radius: 22px;
   padding: 1.5px;
   /* Animated conic-gradient as the border */
-  background: conic-gradient(
-    from var(--border-angle),
-    var(--ca) 0%,
-    var(--cb) 25%,
-    rgba(255,255,255,0.06) 40%,
-    var(--cb) 60%,
-    var(--ca) 75%,
-    rgba(255,255,255,0.06) 88%,
-    var(--ca) 100%
-  );
+  background: conic-gradient(from var(--border-angle),
+      var(--ca) 0%,
+      var(--cb) 25%,
+      rgba(255, 255, 255, 0.06) 40%,
+      var(--cb) 60%,
+      var(--ca) 75%,
+      rgba(255, 255, 255, 0.06) 88%,
+      var(--ca) 100%);
   animation: border-spin 4s linear infinite;
   box-shadow:
     0 0 0 0 transparent,
-    0 24px 64px rgba(0,0,0,0.65),
-    0 4px 24px rgba(0,0,0,0.5);
+    0 24px 64px rgba(0, 0, 0, 0.65),
+    0 4px 24px rgba(0, 0, 0, 0.5);
   transition: box-shadow 0.4s ease;
   will-change: background;
 }
@@ -298,7 +328,7 @@ body.is-scrolling {
 .pcard-shell:hover {
   box-shadow:
     0 0 55px color-mix(in srgb, var(--ca) 18%, transparent),
-    0 30px 80px rgba(0,0,0,0.75);
+    0 30px 80px rgba(0, 0, 0, 0.75);
 }
 
 /* ──────────────────────────────────────────────────────────────────
@@ -373,16 +403,14 @@ body.is-scrolling {
   position: relative;
   border-radius: 999px;
   padding: 1.5px;
-  background: conic-gradient(
-    from var(--border-angle),
-    var(--ca) 0%,
-    var(--cb) 30%,
-    rgba(255,255,255,0.12) 48%,
-    var(--cb) 65%,
-    var(--ca) 80%,
-    rgba(255,255,255,0.12) 92%,
-    var(--ca) 100%
-  );
+  background: conic-gradient(from var(--border-angle),
+      var(--ca) 0%,
+      var(--cb) 30%,
+      rgba(255, 255, 255, 0.12) 48%,
+      var(--cb) 65%,
+      var(--ca) 80%,
+      rgba(255, 255, 255, 0.12) 92%,
+      var(--ca) 100%);
   animation: border-spin 4s linear infinite;
   flex-shrink: 0;
   margin-left: auto;
@@ -434,13 +462,11 @@ body.is-scrolling {
    ────────────────────────────────────────────────────────────────── */
 .pcard-divider {
   height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255,255,255,0.09) 20%,
-    rgba(255,255,255,0.09) 80%,
-    transparent 100%
-  );
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.09) 20%,
+      rgba(255, 255, 255, 0.09) 80%,
+      transparent 100%);
   margin: 22px 0 26px;
 }
 
@@ -459,16 +485,16 @@ body.is-scrolling {
   max-width: 50%;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.09);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   background: #0a0a10;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
-  transition: transform 0.45s cubic-bezier(0.22,1,0.36,1),
-              box-shadow 0.45s ease;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s ease;
 }
 
 .pcard-shell:hover .pcard-mockup {
   transform: scale(1.018) translateY(-2px);
-  box-shadow: 0 16px 48px rgba(0,0,0,0.75);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.75);
 }
 
 /* macOS dots bar */
@@ -478,7 +504,7 @@ body.is-scrolling {
   gap: 6px;
   padding: 9px 13px;
   background: #0c0c12;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .pcard-dot {
@@ -488,9 +514,18 @@ body.is-scrolling {
   border-radius: 50%;
   flex-shrink: 0;
 }
-.pcard-dot-r { background: #ff5f56; }
-.pcard-dot-y { background: #ffbd2e; }
-.pcard-dot-g { background: #27c93f; }
+
+.pcard-dot-r {
+  background: #ff5f56;
+}
+
+.pcard-dot-y {
+  background: #ffbd2e;
+}
+
+.pcard-dot-g {
+  background: #27c93f;
+}
 
 /* Screenshot */
 .pcard-mockup-screen {
@@ -506,7 +541,7 @@ body.is-scrolling {
   object-fit: cover;
   object-position: top center;
   display: block;
-  transition: transform 0.65s cubic-bezier(0.22,1,0.36,1);
+  transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .pcard-shell:hover .pcard-mockup-img {
@@ -549,8 +584,8 @@ body.is-scrolling {
   gap: 8px;
   padding: 7px 16px;
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
   font-size: 0.8rem;
   font-weight: 600;
   color: #d1d5db;
@@ -585,6 +620,7 @@ body.is-scrolling {
     flex-direction: column;
     gap: 24px;
   }
+
   .pcard-mockup {
     flex: unset;
     max-width: 100%;
@@ -596,23 +632,28 @@ body.is-scrolling {
   .pcard-surface {
     padding: 22px 18px 26px;
   }
+
   .pcard-header {
     gap: 12px;
   }
+
   .pcard-num {
     font-size: 2.6rem;
     min-width: 72px;
   }
+
   .pcard-btn-shell {
     margin-left: 0;
     order: 3;
     width: 100%;
   }
+
   .pcard-btn-inner {
     width: 100%;
     justify-content: center;
   }
+
   .pcard-divider {
     margin: 16px 0 20px;
   }
-}
+}

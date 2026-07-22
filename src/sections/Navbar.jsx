@@ -36,19 +36,6 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Blackhole Video Background */}
-      <div className="blackhole-box">
-        <video
-          src="assets/blackhole.mp4"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata" //  Loads faster, avoids blocking
-          className="pointer-events-none select-none" //  Avoid accidental touches causing lag
-        />
-      </div>
-
       {/* Navbar */}
       <div className="fixed inset-x-0 top-0 z-50 w-full pt-3 px-4 sm:px-6 lg:px-8 pointer-events-auto">
         <div className="mx-auto max-w-7xl px-6 py-2.5 rounded-2xl bg-[#000000]/85 backdrop-blur-xl border border-white/15 shadow-2xl transition-all duration-300">
