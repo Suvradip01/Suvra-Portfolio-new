@@ -1,4 +1,4 @@
-import { useRef, useState, useMemo, useEffect } from "react";
+import { useRef, useMemo, useEffect, useState } from "react";
 import Card from "../components/Card";
 import { Globe } from "../components/globe";
 import CopyEmailButton from "../components/CopyEmailButton";
@@ -8,22 +8,11 @@ import { Particles } from "../components/Particles";
 
 const About = () => {
   const grid2Container = useRef();
-  const grid2VideoRef = useRef(null); // ref to pause cont-bg.mp4 when off-screen
-  const globeContainerRef = useRef(null); // ref to mount/unmount globe via IntersectionObserver
-  const [activeGrid, setActiveGrid] = useState(null);
+  const grid2VideoRef = useRef(null);
+  const globeContainerRef = useRef(null);
   const [showGlobe, setShowGlobe] = useState(false);
-  const [isTouch, setIsTouch] = useState(false); //  Detect mobile/touch device
-
-  //  Detect touch devices on first render
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setIsTouch("ontouchstart" in window || navigator.maxTouchPoints > 0);
-    }
-  }, []);
 
   // Mount Globe only when the Time Zone card is actually in view.
-  // This prevents two WebGL contexts (Hero astronaut + globe) from being alive simultaneously,
-  // which causes WebGL context loss and scroll performance degradation.
   useEffect(() => {
     const el = globeContainerRef.current;
     if (!el) return;
@@ -38,39 +27,19 @@ const About = () => {
     return () => observer.disconnect();
   }, []);
 
-
-
   const frameworks = useMemo(() => <Frameworks />, []);
-
-  const glowStyle = useMemo(
-    () => ({
-      boxShadow: "0 0 40px 10px rgba(127, 90, 240, 0.9)",
-      transition: "box-shadow 0s ease-in-out",
-      willChange: "box-shadow, transform",
-    }),
-    []
-  );
-
-  //  Reusable handler
-  const handleGridEnter = (id) => !isTouch && setActiveGrid(id);
-  const handleGridLeave = () => !isTouch && setActiveGrid(null);
-  const handleGridClick = (id) => isTouch && setActiveGrid((prev) => (prev === id ? null : id));
 
   return (
     <ScrollReveal>
       <section className="c-space section-spacing" id="about">
-        <h2 className="text-heading text-white-500 drop-shadow-[0_0_8px_rgba(127,90,240,0.5)]">
+        <h2 className="text-4xl md:text-4xl font-extrabold tracking-tight text-white">
           About Me
         </h2>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-6 md:auto-rows-[18rem] mt-12">
           {/* Grid 1 */}
           <div
-            className="flex items-end grid-default-color grid-1 relative overflow-hidden hover:scale-[1.001] transform-gpu"
-            style={activeGrid === 1 ? glowStyle : {}}
-            onMouseEnter={() => handleGridEnter(1)}
-            onMouseLeave={handleGridLeave}
-            onClick={() => handleGridClick(1)} // Tap activates glow
+            className="flex items-end grid-default-color grid-1 relative overflow-hidden transform-gpu"
           >
             <img
               src="assets/coding-pov.png"
@@ -93,11 +62,7 @@ const About = () => {
 
           {/* Grid 2 */}
           <div
-            className="grid-default-color grid-2 hover:scale-[1.001] transform-gpu relative overflow-hidden"
-            style={activeGrid === 2 ? glowStyle : {}}
-            onMouseEnter={() => handleGridEnter(2)}
-            onMouseLeave={handleGridLeave}
-            onClick={() => handleGridClick(2)}
+            className="grid-default-color grid-2 transform-gpu relative overflow-hidden"
           >
             {/* Background Image */}
             <img
@@ -140,11 +105,7 @@ const About = () => {
           {/* Grid 3 */}
           <div
             ref={globeContainerRef}
-            className="grid-black-color grid-3 relative overflow-hidden hover:scale-[1.001] transform-gpu"
-            style={activeGrid === 3 ? glowStyle : {}}
-            onMouseEnter={() => handleGridEnter(3)}
-            onMouseLeave={handleGridLeave}
-            onClick={() => handleGridClick(3)}
+            className="grid-black-color grid-3 relative overflow-hidden transform-gpu"
           >
             <div className="z-10 w-[50%] animate-slideUp transform-gpu will-change-transform">
               <p className="headtext text-white-500 drop-shadow-[0_0_10px_rgba(127,90,240,0.5)]">
@@ -163,25 +124,17 @@ const About = () => {
 
           {/* Grid 4 */}
           <div
-            className="grid-special-color grid-4 flex flex-col items-center justify-center gap-4 hover:scale-[1.001] transform-gpu"
-            style={activeGrid === 4 ? glowStyle : {}}
-            onMouseEnter={() => handleGridEnter(4)}
-            onMouseLeave={handleGridLeave}
-            onClick={() => handleGridClick(4)}
+            className="grid-special-color grid-4 flex flex-col items-center justify-center gap-4 transform-gpu"
           >
             <p className="text-center headtext animate-pulse-gradient transform-gpu">
               Ready to code across galaxies? Let's launch together.
             </p>
-            <CopyEmailButton className="hover:scale-105 transition-transform duration-200 transform-gpu" />
+            <CopyEmailButton />
           </div>
 
           {/* Grid 5 */}
           <div
-            className="grid-default-color grid-5 relative overflow-hidden hover:scale-[1.001] transform-gpu"
-            style={activeGrid === 5 ? glowStyle : {}}
-            onMouseEnter={() => handleGridEnter(5)}
-            onMouseLeave={handleGridLeave}
-            onClick={() => handleGridClick(5)}
+            className="grid-default-color grid-5 relative overflow-hidden transform-gpu"
           >
             <img
               src="assets/tech.png"

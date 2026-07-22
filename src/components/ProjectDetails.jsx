@@ -57,6 +57,17 @@ const ProjectDetails = ({
     setHighlightsPaused(false);
   };
 
+  // Touch support for mobile — pause on touch, resume on release
+  const handleTouchStart = () => {
+    isHoveredRef.current = true;
+    setHighlightsPaused(true);
+  };
+
+  const handleTouchEnd = () => {
+    isHoveredRef.current = false;
+    setHighlightsPaused(false);
+  };
+
   // Lock page scroll when modal is open
   useEffect(() => {
     const originalOverflowBody = document.body.style.overflow;
@@ -203,19 +214,21 @@ const ProjectDetails = ({
                 The inner div handles the JS-based continuous scroll and allows manual scrolling when hovered.
               */}
               <div
-                className="relative flex-grow overflow-hidden rounded-xl"
+                className="highlights-window relative flex-grow overflow-hidden rounded-xl"
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
               >
                 {/* Top fade mask */}
                 <div className="absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
                 {/* Bottom fade mask */}
                 <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-[#040406] to-transparent z-10 pointer-events-none" />
 
-                {/* JS Marquee container */}
+                {/* JS Marquee container — overflow-y-scroll keeps scrollTop active even before overflow occurs */}
                 <div
                   ref={highlightsRef}
-                  className="flex flex-col gap-3 py-3 pr-1 h-full overflow-y-auto no-scrollbar"
+                  className="flex flex-col gap-3 py-3 pr-1 h-full overflow-y-scroll no-scrollbar"
                 >
                   {/* Double the list so the scroll loops seamlessly */}
                   {[...subDescription, ...subDescription].map((subDesc, i) => (

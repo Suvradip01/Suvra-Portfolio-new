@@ -43,7 +43,8 @@ const OrbitItem = ({ word, angle, isDot }) => {
             <span style={{
               position: "absolute", left: 0, bottom: "65vh",
               transform: "translate(-50%, 50%)",
-              fontSize: "clamp(1.2rem, 3.2vw, 2.5rem)", fontWeight: 900,
+              /* Mobile: min 1.6rem so words are legible on phones; desktop uses 3.2vw+ */
+              fontSize: "clamp(1.6rem, 3.2vw, 2.5rem)", fontWeight: 900,
               fontFamily: "'Outfit', 'Inter', sans-serif", color: "#ffffff",
               textTransform: "uppercase", letterSpacing: "0.04em",
               userSelect: "none", whiteSpace: "pre", lineHeight: 1, display: "inline-block",
@@ -183,11 +184,11 @@ export const TransitionBridge = () => {
           {/* Fullscreen Content */}
           <motion.div
             style={{ opacity: contentOp, y: contentY, pointerEvents: "auto" }}
-            className="absolute inset-0 w-full h-full flex flex-col justify-center px-6 md:px-12 pt-16 md:pt-20 pb-8 overflow-hidden"
+            className="absolute inset-0 w-full h-full flex flex-col justify-start md:justify-center px-4 md:px-12 pt-14 md:pt-20 pb-6 overflow-y-auto"
           >
-            <div className="max-w-7xl mx-auto w-full" style={{ transform: "scale(0.95)", transformOrigin: "center center" }}>
+            <div className="max-w-7xl mx-auto w-full md:scale-95 md:origin-center">
               {/* 2-Column Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-5 items-start">
 
                 {/* ── LEFT: Education (Minimalist Monochrome Panel) ── */}
                 <div className="lg:col-span-5 bg-black p-6 rounded-2xl border border-black space-y-5">

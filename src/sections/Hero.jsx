@@ -54,15 +54,18 @@ const Hero = () => {
           {[
             {
               name: "GITHUB",
-              href: "https://github.com/your-github",
+              href: "https://github.com/Suvradip01",
+              icon: "/assets/socials/github.svg",
             },
             {
               name: "LINKEDIN",
-              href: "https://linkedin.com/in/your-linkedin",
+              href: "https://www.linkedin.com/in/suvradip01/",
+              icon: "/assets/socials/linkedIn.svg",
             },
             {
               name: "EMAIL",
-              href: "#contact",
+              href: "mailto:suvrawork03@gmail.com",
+              icon: "/assets/socials/email.svg",
             },
           ].map((item, index, arr) => (
             <div key={item.name} className="flex flex-col items-center">
@@ -71,29 +74,45 @@ const Hero = () => {
                 target={item.href.startsWith("http") ? "_blank" : "_self"}
                 rel="noreferrer"
                 className="
-            uppercase
-            [writing-mode:vertical-lr]
-            rotate-180
-            text-[13px]
-            font-semibold
-            tracking-[0.35em]
-            text-white
-            transition-all
-            duration-300
-            hover:text-[#00ffff]
-            hover:scale-110
-          "
-                style={{
-                  textShadow:
-                    "0 0 8px rgba(255,255,255,0.9), 0 0 18px rgba(255,255,255,0.45)",
-                }}
+                  group
+                  flex
+                  flex-col
+                  items-center
+                  gap-2.5
+                  transition-all
+                  duration-300
+                  hover:scale-110
+                "
               >
-                {item.name}
+                <img
+                  src={item.icon}
+                  alt={item.name}
+                  className="w-5 h-5 object-contain transition-transform duration-300"
+                />
+                <span
+                  className="
+                    uppercase
+                    [writing-mode:vertical-lr]
+                    rotate-180
+                    text-[12px]
+                    font-semibold
+                    tracking-[0.35em]
+                    text-white
+                    transition-all
+                    duration-300
+                  "
+                  style={{
+                    textShadow:
+                      "0 0 8px rgba(255,255,255,0.9), 0 0 18px rgba(255,255,255,0.45)",
+                  }}
+                >
+                  {item.name}
+                </span>
               </a>
 
               {/* Connector Line */}
               {index !== arr.length - 1 && (
-                <div className="w-px h-12 my-6 bg-white/40" />
+                <div className="w-px h-10 my-4 bg-white/40" />
               )}
             </div>
           ))}

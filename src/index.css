@@ -167,6 +167,24 @@ body {
   will-change: transform;
 }
 
+/* Key Highlights scroll window:
+   On mobile (< lg = 1024px) flex-grow resolves to 0 height inside a flex-col,
+   so h-full on the inner marquee div also becomes 0 and scrollTop does nothing.
+   Fix: give the window an explicit fixed height on mobile so scrollTop works. */
+.highlights-window {
+  min-height: 180px;
+  height: 180px;
+}
+
+/* On lg+ (desktop) restore flex-grow behaviour — height is determined by the grid */
+@media (min-width: 1024px) {
+  .highlights-window {
+    height: auto;
+    min-height: 0;
+    flex-grow: 1;
+  }
+}
+
 /* Animation pausing during scroll removed. Modern GPUs handle transform animations in the compositor thread. Pausing/unpausing them via JavaScript class toggling causes main-thread jitter. */
 
 /* ⚡ Perf fix: Disable pointer events globally during scroll. 
@@ -233,23 +251,23 @@ body.is-scrolling {
 
 /* About Section */
 .grid-1 {
-  @apply row-span-2 md:col-span-3 h-[15rem] md:h-full relative overflow-hidden hover:-translate-y-1 duration-200;
+  @apply row-span-2 md:col-span-3 h-[15rem] md:h-full relative overflow-hidden;
 }
 
 .grid-2 {
-  @apply row-span-1 md:col-span-3 h-[15rem] md:h-full relative overflow-hidden hover:-translate-y-1 duration-200;
+  @apply row-span-1 md:col-span-3 h-[15rem] md:h-full relative overflow-hidden;
 }
 
 .grid-3 {
-  @apply row-span-1 md:col-span-3 h-[15rem] md:h-full relative overflow-hidden hover:-translate-y-1 duration-200;
+  @apply row-span-1 md:col-span-3 h-[15rem] md:h-full relative overflow-hidden;
 }
 
 .grid-4 {
-  @apply row-span-1 md:col-span-2 h-[15rem] md:h-full relative overflow-hidden hover:-translate-y-1 duration-200;
+  @apply row-span-1 md:col-span-2 h-[15rem] md:h-full relative overflow-hidden;
 }
 
 .grid-5 {
-  @apply row-span-1 md:col-span-4 h-[15rem] md:h-full relative overflow-hidden hover:-translate-y-1 duration-200;
+  @apply row-span-1 md:col-span-4 h-[15rem] md:h-full relative overflow-hidden;
 }
 
 .grid-default-color {
@@ -655,6 +673,7 @@ body.is-scrolling {
 
   .pcard-header {
     gap: 12px;
+    flex-wrap: wrap;
   }
 
   .pcard-num {
@@ -662,6 +681,7 @@ body.is-scrolling {
     min-width: 72px;
   }
 
+  /* On mobile the header CTA (LIVE PROJECT etc.) goes full-width below title */
   .pcard-btn-shell {
     margin-left: 0;
     order: 3;
@@ -675,5 +695,42 @@ body.is-scrolling {
 
   .pcard-divider {
     margin: 16px 0 20px;
+  }
+
+  /* Right column: stop description + tags from pushing Explore button off-screen */
+  .pcard-right {
+    gap: 14px;
+    max-height: none;
+  }
+
+  /* Description shorter on mobile */
+  .pcard-desc {
+    font-size: 0.9rem;
+    line-height: 1.65;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Tags wrap tightly */
+  .pcard-tags {
+    gap: 6px;
+  }
+  .pcard-tag {
+    padding: 5px 12px;
+    font-size: 0.75rem;
+  }
+
+  /* Explore Details button — always full-width and prominent on mobile */
+  .pcard-right .pcard-btn-shell {
+    width: 100%;
+    margin-left: 0;
+    order: unset;
+  }
+  .pcard-right .pcard-btn-inner {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 20px;
   }
 }

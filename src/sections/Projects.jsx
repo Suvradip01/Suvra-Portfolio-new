@@ -86,10 +86,6 @@ const Projects = () => {
           transition={{ duration: 0.7, ease: [0.215, 0.61, 0.355, 1] }}
           className="flex items-center gap-4 mb-3"
         >
-          <span className="text-xs font-bold tracking-[0.3em] uppercase text-neutral-500">
-            Portfolio
-          </span>
-          <span className="h-px w-12 bg-neutral-700" />
         </motion.div>
 
         <motion.h2
@@ -97,10 +93,10 @@ const Projects = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.1, ease: [0.215, 0.61, 0.355, 1] }}
-          className="text-4xl md:text-5xl font-extrabold text-white tracking-tight drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]"
+          className="text-4xl md:text-4xl font-extrabold tracking-tight text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] hover:drop-shadow-[0_0_12px_rgba(255,255,255,1)] transition-all duration-300"
         >
           Selected{" "}
-          <span className="bg-gradient-to-r from-violet-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent">
+          <span className="text-4xl md:text-4xl font-extrabold text-white tracking-tight drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]">
             Projects
           </span>
         </motion.h2>
