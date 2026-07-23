@@ -286,7 +286,7 @@ export const TransitionBridge = () => {
                       <p className="text-[11px] font-semibold text-neutral-600 uppercase">Google &amp; AICTE EduSkills</p>
                       <div className="flex flex-wrap gap-2 pt-1">
                         <LiveButton href="https://g.dev/suvra" label="DEV PROFILE" />
-                        <LiveButton href="https://shorturl.at/P1uHq" label="CERTIFICATE" />
+                        <LiveButton href="https://drive.google.com/file/d/1Ct77gvVZ1IANpbuovtEjU85ljKhkZJ87/view" label="CERTIFICATE" />
                       </div>
                     </div>
 

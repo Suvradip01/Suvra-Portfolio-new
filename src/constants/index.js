@@ -139,7 +139,10 @@ export const myProjects = [
     images: [
       "/assets/projects/Luminist/2026-06-16 17 18 09.png",
       "/assets/projects/Luminist/2026-06-16 17 20 13.png",
-      "/assets/projects/Luminist/2026-06-16 17 21 24.png"
+      "/assets/projects/Luminist/2026-06-16 17 21 24.png",
+      "/assets/projects/Luminist/2026-07-23 11 36 40.png",
+      "/assets/projects/Luminist/2026-07-23 11 39 19.png",
+      "/assets/projects/Luminist/2026-07-23 11 39 34.png"
     ],
     tags: [
       { id: 1, name: "Next.js", path: "/assets/logos/react.svg" },
@@ -219,7 +222,7 @@ export const experiences = [
       "Completed intensive virtual training on Android application architecture, UI design, and platform integrations.",
       "Gained hands-on experience building and deploying Android apps using modern developer tools and practices.",
       "Internship Profile https://g.dev/suvra",
-      "Certificate  https://shorturl.at/P1uHq",
+      "Certificate https://drive.google.com/file/d/1Ct77gvVZ1IANpbuovtEjU85ljKhkZJ87/view",
     ],
   },
   {
