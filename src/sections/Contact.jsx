@@ -113,7 +113,7 @@ const Contact = () => {
               type="text"
               aria-label="Full Name"
               className="field-input field-input-focus"
-              placeholder="Arnab Ghosh"
+              placeholder="Your Name"
               autoComplete="name"
               value={formData.name}
               onChange={handleChange}
@@ -131,7 +131,7 @@ const Contact = () => {
               type="email"
               aria-label="Email"
               className="field-input field-input-focus"
-              placeholder="arnab@email.com"
+              placeholder="Your Email"
               autoComplete="email"
               value={formData.email}
               onChange={handleChange}
