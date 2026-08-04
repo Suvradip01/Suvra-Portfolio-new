@@ -1,32 +1,12 @@
-import { useRef, useMemo, useEffect, useState } from "react";
+import { useRef, useMemo } from "react";
 import Card from "../components/Card";
-import { Globe } from "../components/globe";
 import CopyEmailButton from "../components/CopyEmailButton";
 import { Frameworks } from "../components/Frameworks";
 import ScrollReveal from "./ScrollReveal";
-import { Particles } from "../components/Particles";
+import { LocationMap } from "../components/LocationMap";
 
 const About = () => {
   const grid2Container = useRef();
-  const grid2VideoRef = useRef(null);
-  const globeContainerRef = useRef(null);
-  const [showGlobe, setShowGlobe] = useState(false);
-
-  // Mount Globe only when the Time Zone card is actually in view.
-  useEffect(() => {
-    const el = globeContainerRef.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setShowGlobe(entry.isIntersecting);
-      },
-      { threshold: 0.1 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
   const frameworks = useMemo(() => <Frameworks />, []);
 
   return (
@@ -102,12 +82,16 @@ const About = () => {
             </div>
           </div>
 
-          {/* Grid 3 */}
-          <div
-            ref={globeContainerRef}
-            className="grid-black-color grid-3 relative overflow-hidden transform-gpu"
-          >
-            <div className="z-10 w-[50%] animate-slideUp transform-gpu will-change-transform">
+          {/* Grid 3 — now a clean animated map instead of the WebGL globe */}
+          <div className="grid-3 relative overflow-hidden transform-gpu" style={{
+            height: "288px",
+            padding: 0,
+            margin: 0,
+            background: "#000000", // Changed from gradient to pure black
+            borderRadius: "1rem"
+          }}>
+            <LocationMap />
+            <div className="z-[2000] w-[50%] animate-slideUp transform-gpu will-change-transform absolute top-6 left-6 pointer-events-none">
               <p className="headtext text-white-500 drop-shadow-[0_0_10px_rgba(127,90,240,0.5)]">
                 Time Zone
               </p>
@@ -115,11 +99,6 @@ const About = () => {
                 Operating from Mars, deploying apps across galaxies.
               </p>
             </div>
-            {showGlobe && (
-              <figure className="absolute left-[37%] top-[-10%] w-full h-[104%] transform-gpu pointer-events-auto">
-                <Globe />
-              </figure>
-            )}
           </div>
 
           {/* Grid 4 */}

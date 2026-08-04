@@ -213,7 +213,7 @@ export const mySocials = [
 
 export const experiences = [
   {
-    title: "Android Developer Virtual Internship",
+    title: "Android Developer Intern",
     job: "Google & AICTE EduSkills",
     date: "Apr 2024 - Jun 2024",
     background: "/assets/google-android.png",
@@ -228,17 +228,17 @@ export const experiences = [
   {
     title: "Academic Education",
     job: "Master of Computer Applications (MCA) & Bachelor of Computer Applications (BCA)",
-    date: "2021 - Present",
+    date: "2021 - 2026",
     background: "/assets/degree.png",
     contents: [
-      "Master of Computer Applications (2024 – Present) | Sikkim Manipal Institute of Technology — CGPA: 8.25",
+      "Master of Computer Applications (2024 – 2026) | Sikkim Manipal Institute of Technology — CGPA: 8.69",
       "Bachelor of Computer Applications (2021 – 2024) | Techno India University — CGPA: 8.39",
       "Higher Secondary (Class XII) (2021) | Maynaguri High School — Percentage: 88.6%",
     ],
   },
   {
     title: "Professional Certifications",
-    job: "IBM, Google & Oracle",
+    job: "IBM certification, Google certification & Oracle certification",
     date: "2024 - Present",
     background: "/assets/certificate.png",
     contents: [

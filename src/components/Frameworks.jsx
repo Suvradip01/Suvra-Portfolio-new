@@ -10,22 +10,24 @@ const OUTER_SKILLS = [
   "tailwindcss",
   "vitejs",
   "canva",
-  "visualstudiocode",
   "flutter",
   "dart",
+  "redux",
 ];
 
 const MIDDLE_SKILLS = [
   "nodejs",
   "expressjs",
   "fastapi",
-  "mysql",
   "mongodb",
   "docker",
   "git",
   "github",
   "linux",
   "dotnet",
+  "redis",
+  "zustand",
+  "SQLite",
 ];
 
 const INNER_SKILLS = [

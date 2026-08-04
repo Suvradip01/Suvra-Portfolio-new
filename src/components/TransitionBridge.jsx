@@ -214,12 +214,12 @@ export const TransitionBridge = () => {
                       <div className="p-4 bg-transparent rounded-xl border border-white/10 group-hover:border-white/50 transition-all duration-300 space-y-2">
                         <div className="flex items-center justify-between">
                           <span className="text-[9px] tracking-widest font-black uppercase px-2.5 py-0.5 rounded-full text-black bg-white">MASTER DEGREE</span>
-                          <span className="text-[10px] font-bold text-neutral-400 uppercase">2024 – Present</span>
+                          <span className="text-[10px] font-bold text-neutral-400 uppercase">2024 – 2026</span>
                         </div>
                         <h4 className="text-sm font-black text-white uppercase tracking-tight leading-snug">Master of Computer Applications (MCA)</h4>
                         <p className="text-[11px] font-semibold text-neutral-400 uppercase">Sikkim Manipal Institute of Technology</p>
                         <div className="pt-0.5">
-                          <span className="inline-block text-[10px] font-black text-white bg-white/10 px-2.5 py-0.5 rounded-md border border-white/20">CGPA: 8.25</span>
+                          <span className="inline-block text-sm font-black text-white bg-white/10 px-3 py-1 rounded-md border border-white/20">CGPA: 8.69</span>
                         </div>
                       </div>
                     </div>
@@ -235,7 +235,7 @@ export const TransitionBridge = () => {
                         <h4 className="text-sm font-black text-white uppercase tracking-tight leading-snug">Bachelor of Computer Applications (BCA)</h4>
                         <p className="text-[11px] font-semibold text-neutral-400 uppercase">Techno India University</p>
                         <div className="pt-0.5">
-                          <span className="inline-block text-[10px] font-black text-white bg-white/10 px-2.5 py-0.5 rounded-md border border-white/20">CGPA: 8.39</span>
+                          <span className="inline-block text-sm font-black text-white bg-white/10 px-3 py-1 rounded-md border border-white/20">CGPA: 8.39</span>
                         </div>
                       </div>
                     </div>
@@ -251,7 +251,7 @@ export const TransitionBridge = () => {
                         <h4 className="text-sm font-black text-white uppercase tracking-tight leading-snug">Class XII (Higher Secondary)</h4>
                         <p className="text-[11px] font-semibold text-neutral-400 uppercase">Maynaguri High School</p>
                         <div className="pt-0.5">
-                          <span className="inline-block text-[10px] font-black text-white bg-white/10 px-2.5 py-0.5 rounded-md border border-white/20">Percentage: 88.6%</span>
+                          <span className="inline-block text-sm font-black text-white bg-white/10 px-3 py-1 rounded-md border border-white/20">Percentage: 88.6%</span>
                         </div>
                       </div>
                     </div>
@@ -270,7 +270,7 @@ export const TransitionBridge = () => {
                         style={{ fontFamily: "'Outfit', 'Inter', sans-serif" }}>
                         Certifications
                       </h3>
-                      <p className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider">&amp; Industry Internships</p>
+                      <p className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider"></p>
                     </div>
                   </div>
 
@@ -282,7 +282,7 @@ export const TransitionBridge = () => {
                         <span className="text-[9px] tracking-widest font-black uppercase px-2.5 py-0.5 rounded-full text-black bg-neutral-100 border border-neutral-300">INTERNSHIP</span>
                         <span className="text-[10px] font-bold text-neutral-400 uppercase">Apr 2024 – Jun 2024</span>
                       </div>
-                      <h4 className="text-sm font-black text-black uppercase tracking-tight">Android Developer Virtual Internship</h4>
+                      <h4 className="text-sm font-black text-black uppercase tracking-tight">Android Developer Intern</h4>
                       <p className="text-[11px] font-semibold text-neutral-600 uppercase">Google &amp; AICTE EduSkills</p>
                       <div className="flex flex-wrap gap-2 pt-1">
                         <LiveButton href="https://g.dev/suvra" label="DEV PROFILE" />
@@ -293,7 +293,7 @@ export const TransitionBridge = () => {
                     {/* IBM Full Stack */}
                     <div className="p-3.5 bg-white rounded-xl border border-neutral-200 hover:border-black transition-colors space-y-2 flex flex-col justify-between">
                       <div>
-                        <span className="text-[9px] tracking-widest font-black uppercase px-2.5 py-0.5 rounded-full text-black bg-neutral-100 border border-neutral-300">IBM CERT</span>
+                        <span className="text-[9px] tracking-widest font-black uppercase px-2.5 py-0.5 rounded-full text-black bg-neutral-100 border border-neutral-300">IBM certification</span>
                         <h4 className="text-xs font-black text-black uppercase tracking-tight mt-1">Full Stack Software Developer</h4>
                       </div>
                       <LiveButton href="https://coursera.org/verify/professional-cert/8Y9PV0EKR63Z" label="VERIFY LINK" />
@@ -302,8 +302,8 @@ export const TransitionBridge = () => {
                     {/* IBM Data Science */}
                     <div className="p-3.5 bg-white rounded-xl border border-neutral-200 hover:border-black transition-colors space-y-2 flex flex-col justify-between">
                       <div>
-                        <span className="text-[9px] tracking-widest font-black uppercase px-2.5 py-0.5 rounded-full text-black bg-neutral-100 border border-neutral-300">IBM CERT</span>
-                        <h4 className="text-xs font-black text-black uppercase tracking-tight mt-1">Data Science and AI</h4>
+                        <span className="text-[9px] tracking-widest font-black uppercase px-2.5 py-0.5 rounded-full text-black bg-neutral-100 border border-neutral-300">IBM certification</span>
+                        <h4 className="text-xs font-black text-black uppercase tracking-tight mt-1">Data Science</h4>
                       </div>
                       <LiveButton href="https://coursera.org/verify/professional-cert/065T6NLP2W6A" label="VERIFY LINK" />
                     </div>
@@ -311,7 +311,7 @@ export const TransitionBridge = () => {
                     {/* Google AI Essentials */}
                     <div className="p-3.5 bg-white rounded-xl border border-neutral-200 hover:border-black transition-colors space-y-2 flex flex-col justify-between">
                       <div>
-                        <span className="text-[9px] tracking-widest font-black uppercase px-2.5 py-0.5 rounded-full text-black bg-neutral-100 border border-neutral-300">GOOGLE CERT</span>
+                        <span className="text-[9px] tracking-widest font-black uppercase px-2.5 py-0.5 rounded-full text-black bg-neutral-100 border border-neutral-300">Google certification</span>
                         <h4 className="text-xs font-black text-black uppercase tracking-tight mt-1">Google AI Essentials</h4>
                       </div>
                       <LiveButton href="https://coursera.org/verify/specialization/JBYITCAGT3RH" label="VERIFY LINK" />
@@ -320,7 +320,7 @@ export const TransitionBridge = () => {
                     {/* Oracle Java */}
                     <div className="p-3.5 bg-white rounded-xl border border-neutral-200 hover:border-black transition-colors space-y-2 flex flex-col justify-between">
                       <div>
-                        <span className="text-[9px] tracking-widest font-black uppercase px-2.5 py-0.5 rounded-full text-black bg-neutral-100 border border-neutral-300">ORACLE CERT</span>
+                        <span className="text-[9px] tracking-widest font-black uppercase px-2.5 py-0.5 rounded-full text-black bg-neutral-100 border border-neutral-300">Oracle certification</span>
                         <h4 className="text-xs font-black text-black uppercase tracking-tight mt-1">Oracle Java Foundation</h4>
                       </div>
                       <LiveButton href="https://coursera.org/verify/IC3KZOA4RFFM" label="VERIFY LINK" />
