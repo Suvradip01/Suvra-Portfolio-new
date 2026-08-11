@@ -283,7 +283,7 @@ export const TransitionBridge = () => {
                         <span className="text-[10px] font-bold text-neutral-400 uppercase">Apr 2024 – Jun 2024</span>
                       </div>
                       <h4 className="text-sm font-black text-black uppercase tracking-tight">Android Developer Intern</h4>
-                      <p className="text-[11px] font-semibold text-neutral-600 uppercase">Google &amp; AICTE EduSkills</p>
+                      <p className="text-[11px] font-semibold text-neutral-600 uppercase">EduSkills</p>
                       <div className="flex flex-wrap gap-2 pt-1">
                         <LiveButton href="https://g.dev/suvra" label="DEV PROFILE" />
                         <LiveButton href="https://drive.google.com/file/d/1Ct77gvVZ1IANpbuovtEjU85ljKhkZJ87/view" label="CERTIFICATE" />
