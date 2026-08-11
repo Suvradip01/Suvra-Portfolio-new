@@ -214,7 +214,7 @@ export const mySocials = [
 export const experiences = [
   {
     title: "Android Developer Intern",
-    job: "Google & AICTE EduSkills",
+    job: "EduSkills",
     date: "Apr 2024 - Jun 2024",
     background: "/assets/google-android.png",
     contents: [

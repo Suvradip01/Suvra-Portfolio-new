@@ -30,23 +30,19 @@ function FlyToController({ index }) {
 
 export function LocationMap({ className = "" }) {
   const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
-    if (paused) return;
     const id = setInterval(() => {
       setIndex((i) => (i + 1) % LOCATIONS.length);
     }, CYCLE_MS);
     return () => clearInterval(id);
-  }, [paused]);
+  }, []);
 
   const current = LOCATIONS[index];
 
   return (
     <div
       className={`relative w-full h-full overflow-hidden ${className}`}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
     >
       <MapContainer
         center={current.coords}
