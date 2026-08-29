@@ -2,6 +2,11 @@
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
+/* Dark mode filter for OpenStreetMap tiles */
+.dark-map-tiles {
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+}
+
 @theme {
   --color-primary: #030412;
   --color-midnight: #06091f;
