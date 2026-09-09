@@ -4,43 +4,52 @@ import ParallaxProjectCard from "../components/ParallaxProjectCard";
 import { myProjects } from "../constants";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Each card gets a sticky offset so it "sits" slightly lower than the previous
-// creating the physical stacking illusion from the design reference.
+// ⚡ PERF FIX: Removed per-card useScroll. Previously each StickyCard had its
+// own useScroll + 2 useTransform chains — with 5 cards that was 10 simultaneous
+// scroll watchers all firing on every tick. Now we use ONE section-level watcher
+// and derive each card's values from a single shared scrollYProgress.
 // ─────────────────────────────────────────────────────────────────────────────
-const CARD_STICKY_TOP_BASE = 80; // px from top for first card
-const CARD_STICKY_STEP = 18;     // each next card peeks this many px below the last
 
-// The scroll-distance consumed per card before the NEXT card starts stacking in.
-// Making this taller gives a slower, cinematic pace.
-const SCROLL_PER_CARD = 500; // px of scroll travel per card
+const CARD_STICKY_TOP_BASE = 80;
+const CARD_STICKY_STEP = 18;
+const SCROLL_PER_CARD = 500;
 
-const StickyCard = ({ project, index, total }) => {
-  const ref = useRef(null);
+// Build per-card transform keyframes from section-level progress [0..1]
+function getCardTransforms(scrollYProgress, index, total) {
+  const n = total;
+  // Each card occupies 1/n of the scroll range.
+  // It enters from 0, peaks at index/n, and exits toward 1.
+  const segStart = index / n;
+  const segPeak = (index + 0.35) / n;
+  const segEnd = (index + 0.65) / n;
+  const segOut = (index + 1) / n;
 
-  // Track how far within the section we've scrolled
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
+  const isLast = index === total - 1;
 
-  // Scale + opacity for the "squish / fade" as the next card stacks over it
   const scale = useTransform(
     scrollYProgress,
-    [0, 0.35, 0.65, 1],
-    [0.96, 1, index === total - 1 ? 1 : 0.96, index === total - 1 ? 1 : 0.93]
+    [segStart, segPeak, segEnd, Math.min(segOut, 1)],
+    [0.96, 1, isLast ? 1 : 0.96, isLast ? 1 : 0.93]
   );
 
   const opacity = useTransform(
     scrollYProgress,
-    [0, 0.2, 0.7, 1],
-    [0.6, 1, 1, index === total - 1 ? 1 : 0.85]
+    [segStart, segPeak * 0.6, segEnd, Math.min(segOut, 1)],
+    [0.6, 1, 1, isLast ? 1 : 0.85]
   );
 
+  return { scale, opacity };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// StickyCard — receives shared scrollYProgress instead of creating its own
+// ─────────────────────────────────────────────────────────────────────────────
+const StickyCard = ({ project, index, total, scrollYProgress }) => {
+  const { scale, opacity } = getCardTransforms(scrollYProgress, index, total);
   const stickyTop = CARD_STICKY_TOP_BASE + index * CARD_STICKY_STEP;
 
   return (
     <div
-      ref={ref}
       style={{
         position: "sticky",
         top: `${stickyTop}px`,
@@ -66,16 +75,23 @@ const StickyCard = ({ project, index, total }) => {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Projects section — sticky stacked parallax cards
+// Projects section — one scroll watcher drives all cards
 // ─────────────────────────────────────────────────────────────────────────────
 const Projects = () => {
   const sectionRef = useRef(null);
+
+  // ⚡ Single shared scroll progress — replaces 5 individual useScroll calls
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"],
+  });
 
   return (
     <section
       id="projects"
       ref={sectionRef}
       className="relative w-full py-24 px-4 md:px-8"
+      style={{ contain: "layout style" }}
     >
       {/* ── Heading ── */}
       <div className="max-w-7xl mx-auto mb-16 flex flex-col items-start">
@@ -112,12 +128,9 @@ const Projects = () => {
       </div>
 
       {/* ── Stacked Cards Container ── */}
-      {/* Tall enough so each card gets its full scroll travel */}
       <div
         className="max-w-7xl mx-auto relative"
         style={{
-          // Height = enough space for cards to stack:
-          // (n-1 cards × scroll_per_card) + one card height (approx 400px) + breathing room
           minHeight: `${(myProjects.length - 1) * SCROLL_PER_CARD + 560}px`,
         }}
       >
@@ -127,6 +140,7 @@ const Projects = () => {
             project={project}
             index={index}
             total={myProjects.length}
+            scrollYProgress={scrollYProgress}
           />
         ))}
       </div>

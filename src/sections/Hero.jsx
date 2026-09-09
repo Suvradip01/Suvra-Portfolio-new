@@ -4,12 +4,39 @@ import { Astronaut } from "../components/Astronaut";
 import { Float, Preload } from "@react-three/drei";
 import { useMediaQuery } from "react-responsive";
 import { easing } from "maath";
-import { Suspense, useMemo, useState, useEffect } from "react";
+import { Suspense, useMemo, useState, useEffect, useRef } from "react";
 import Loader from "../components/Loader";
 
 const Hero = () => {
   const isMobile = useMediaQuery({ maxWidth: 853 });
   const [showCanvas, setShowCanvas] = useState(!isMobile);
+  const heroRef = useRef(null);
+  const videoRef = useRef(null);
+  const [isInView, setIsInView] = useState(true);
+
+  // ⚡ Perf: Pause video and freeze Three.js Canvas loop when Hero is off-screen
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const visible = entry.isIntersecting;
+        setIsInView(visible);
+        if (videoRef.current) {
+          if (visible) {
+            videoRef.current.play().catch(() => {});
+          } else {
+            videoRef.current.pause();
+          }
+        }
+      },
+      { threshold: 0 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   //  Delay loading 3D Canvas on mobile (to prevent lag during first paint)
   useEffect(() => {
@@ -30,11 +57,13 @@ const Hero = () => {
   return (
     <section
       id="home"
+      ref={heroRef}
       className="flex items-start justify-center min-h-screen overflow-hidden md:items-start md:justify-start c-space"
     >
       {/* Background Video (cont-bg.mp4) */}
       <div className="blackhole-box">
         <video
+          ref={videoRef}
           src="/assets/cont-bg.mp4"
           autoPlay
           loop
@@ -129,6 +158,7 @@ const Hero = () => {
           style={{ width: "100vw", height: "100vh" }}
         >
           <Canvas
+            frameloop={isInView ? "always" : "never"}
             camera={{ position: [0, 1, 3] }}
             dpr={isMobile ? [1, 1.2] : [1, 1.5]}
             gl={{

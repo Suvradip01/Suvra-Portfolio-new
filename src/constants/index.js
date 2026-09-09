@@ -66,6 +66,35 @@ export const myProjects = [
   },
   {
     id: 3,
+    title: "QMS — AI Complaint Management",
+    description:
+      "AI-powered pharmaceutical Quality Management System that auto-extracts 14 fields from unstructured complaints, classifies severity, and generates CAPA plans using a LangGraph multi-agent pipeline.",
+
+    subDescription: [
+      "Built an AI pipeline using LangGraph that processes unstructured pharma complaints — emails, PDFs, call transcripts — and auto-fills 14 regulatory fields with zero manual entry.",
+      "Implemented intelligent risk triage classifying severity (Critical / High / Medium / Low) and priority following FDA & EMA QMS regulatory standards.",
+      "Enabled conversational correction — QA officers fix extracted fields via natural language; the graph detects intent and re-runs only affected nodes, saving full pipeline re-runs.",
+      "Integrated duplicate detection, completeness validation, CAPA plan generation, and root cause analysis — reducing complaint processing time from 10–15 min to under 60 seconds."
+    ],
+    href: "https://github.com/Suvradip01",
+    liveHref: "",
+    images: [
+      "/assets/projects/QMS/qms-dashboard.jpg",
+      "/assets/projects/QMS/qms-pipeline.jpg",
+      "/assets/projects/QMS/qms-complaints.jpg"
+    ],
+    tags: [
+      { id: 1, name: "React.js", path: "/assets/logos/react.svg" },
+      { id: 2, name: "Redux", path: "/assets/logos/redux.svg" },
+      { id: 3, name: "FastAPI", path: "/assets/logos/fastapi.svg" },
+      { id: 4, name: "Python", path: "/assets/logos/python.svg" },
+      { id: 5, name: "SQLite", path: "/assets/logos/SQLite.svg" },
+      { id: 6, name: "Google Gemini", path: "/assets/logos/gemini.svg" },
+      { id: 7, name: "Docker", path: "/assets/logos/docker.svg" },
+    ],
+  },
+  {
+    id: 4,
     title: "AI-Powered CSV Import Platform",
     description: "AI-powered CSV import platform that transforms unstructured spreadsheets into validated CRM-ready records.",
     subDescription: [
@@ -94,7 +123,7 @@ export const myProjects = [
     ],
   },
   {
-    id: 4,
+    id: 5,
     title: "Skin Disease Detection",
     description:
       "Deep learning-based skin lesion classification system for early melanoma detection using Computer Vision.",
@@ -123,7 +152,7 @@ export const myProjects = [
     ],
   },
   {
-    id: 5,
+    id: 6,
     title: "Luminist",
     description:
       "AI-powered photo editing platform with intelligent editing tools, cloud storage, and project management.",
@@ -153,7 +182,7 @@ export const myProjects = [
     ],
   },
   {
-    id: 6,
+    id: 7,
     title: "Interference Detection",
     description:
       "Deep learning-based system that classifies scanned examination papers as Clean or Interference before automated evaluation.",

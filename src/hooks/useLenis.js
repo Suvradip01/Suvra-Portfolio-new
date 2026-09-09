@@ -14,13 +14,13 @@ export const useLenis = () => {
     if (isTouchDevice) return;
 
     const lenis = new Lenis({
-      lerp: 0.08,            // ⚡ Perf fix: was 0.04 (75 settle-frames). 0.08 = ~35 frames — half the compositor thrash, still silky
+      lerp: 0.045,           // 🧈 Butter glide: lower lerp creates extended, ultra-silky coasting momentum
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
-      wheelMultiplier: 1.3,  // ⚡ Perf fix: was 1.7 — lower prevents over-travel on fast swipes that compounded stutter
+      wheelMultiplier: 1.15, // Silky travel per wheel step without jarring jumps
       infinite: false,
-      autoRaf: true,         // Native RAF loop is optimized for high refresh rates
+      autoRaf: true,         // Native RAF loop synchronized with monitor refresh rate
     });
 
     lenisInstance = lenis;

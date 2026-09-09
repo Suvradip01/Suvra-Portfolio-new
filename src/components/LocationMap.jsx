@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -30,18 +30,39 @@ function FlyToController({ index }) {
 
 export function LocationMap({ className = "" }) {
   const [index, setIndex] = useState(0);
+  const containerRef = useRef(null);
+  const isVisibleRef = useRef(true);
 
+  // ⚡ Perf: Only cycle locations and trigger Leaflet flyTo when map is visible in viewport
   useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisibleRef.current = entry.isIntersecting;
+      },
+      { threshold: 0 }
+    );
+    observer.observe(el);
+
     const id = setInterval(() => {
-      setIndex((i) => (i + 1) % LOCATIONS.length);
+      if (isVisibleRef.current) {
+        setIndex((i) => (i + 1) % LOCATIONS.length);
+      }
     }, CYCLE_MS);
-    return () => clearInterval(id);
+
+    return () => {
+      clearInterval(id);
+      observer.disconnect();
+    };
   }, []);
 
   const current = LOCATIONS[index];
 
   return (
     <div
+      ref={containerRef}
       className={`relative w-full h-full overflow-hidden ${className}`}
     >
       <MapContainer

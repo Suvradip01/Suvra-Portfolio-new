@@ -120,6 +120,7 @@ const ParallaxProjectCard = ({
                   src={(images && images[0]) || "/assets/projects/project1.png"}
                   alt={`${title} screenshot`}
                   loading="lazy"
+                  decoding="async"
                   className="pcard-mockup-img"
                 />
               </div>

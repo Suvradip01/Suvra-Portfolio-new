@@ -8,6 +8,7 @@ import Footer from "./sections/Footer";
 import { TransitionBridge } from "./components/TransitionBridge";
 import { useLenis } from "./hooks/useLenis";
 import { usePortfolioStore } from "./store/usePortfolioStore";
+import PageLoader from "./components/PageLoader";
 
 const App = () => {
   useLenis();          // 🌊 Initialise Lenis smooth scroll for desktop
@@ -20,6 +21,7 @@ const App = () => {
 
   return (
     <>
+      <PageLoader />
       <Navbar />
 
       {/* ── PARALLAX STACKED CARD: HERO ➔ ABOUT ── */}

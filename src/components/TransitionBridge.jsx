@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Orbit words and dots
@@ -43,7 +43,6 @@ const OrbitItem = ({ word, angle, isDot }) => {
             <span style={{
               position: "absolute", left: 0, bottom: "65vh",
               transform: "translate(-50%, 50%)",
-              /* Mobile: min 1.6rem so words are legible on phones; desktop uses 3.2vw+ */
               fontSize: "clamp(1.6rem, 3.2vw, 2.5rem)", fontWeight: 900,
               fontFamily: "'Outfit', 'Inter', sans-serif", color: "#ffffff",
               textTransform: "uppercase", letterSpacing: "0.04em",
@@ -60,7 +59,6 @@ const OrbitItem = ({ word, angle, isDot }) => {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Exact replica of Live Project button (pcard-btn-shell → pcard-btn-inner)
-// Uses the same animated spinning conic-gradient border from index.css
 // ─────────────────────────────────────────────────────────────────────────────
 const LiveButton = ({ href, label }) => (
   <a
@@ -103,36 +101,42 @@ export const TransitionBridge = () => {
     offset: ["start start", "end end"],
   });
 
-  const smooth = useSpring(scrollYProgress, { stiffness: 70, damping: 24 });
+  // ⚡ PERF FIX: Removed useSpring — it ran a second physics simulation on top of
+  // Lenis's own lerp, causing every scroll tick to double-fire all 6 motion value
+  // chains. Raw scrollYProgress is sufficient; the 600vh track gives cinematic pacing.
 
   // ── Black arc layer ──────────────────────────────────────────────────────────
-  const blackOp = useTransform(smooth, [0.38, 0.48], [1, 0]);
-  const arcY = useTransform(smooth, [0.38, 0.52], ["0vh", "-80vh"]);
-  const wheelRotation = useTransform(smooth, [0.0, 0.38], [140, 0]);
+  const blackOp = useTransform(scrollYProgress, [0.38, 0.48], [1, 0]);
+  const arcY = useTransform(scrollYProgress, [0.38, 0.52], ["0vh", "-80vh"]);
+  const wheelRotation = useTransform(scrollYProgress, [0.0, 0.38], [140, 0]);
 
   // ── SVG Line ────────────────────────────────────────────────────────────────
-  const pathLen = useTransform(smooth, [0.38, 0.50], [0, 1]);
-  const dotOp = useTransform(smooth, [0.48, 0.52], [0, 1]);
+  const pathLen = useTransform(scrollYProgress, [0.38, 0.50], [0, 1]);
+  const dotOp = useTransform(scrollYProgress, [0.48, 0.52], [0, 1]);
 
-  // ── White Box: Opens → Full → Shrinks back identically to first appearance (and stays) ──
-  const boxOp = useTransform(smooth, [0.48, 0.53, 0.96, 1.0], [0, 1, 1, 1]);
-  const boxClip = useTransform(
-    smooth,
+  // ── White Box opacity ────────────────────────────────────────────────────────
+  const boxOp = useTransform(scrollYProgress, [0.48, 0.53, 0.96, 1.0], [0, 1, 1, 1]);
+
+  // ⚡ PERF FIX: Replace clip-path:inset() animation with scale + borderRadius.
+  // clip-path cannot be GPU-composited — it forces rasterisation on every frame.
+  // scale() runs entirely on the compositor thread with zero layout cost.
+  const boxScale = useTransform(
+    scrollYProgress,
     [0.53, 0.63, 0.88, 0.98],
-    [
-      "inset(30vh 25vw 30vh 25vw round 16px)",
-      "inset(0vh 0vw 0vh 0vw round 0px)",
-      "inset(0vh 0vw 0vh 0vw round 0px)",
-      "inset(30vh 25vw 30vh 25vw round 16px)",
-    ]
+    [0.45, 1, 1, 0.45]
+  );
+  const boxRadius = useTransform(
+    scrollYProgress,
+    [0.53, 0.63, 0.88, 0.98],
+    [24, 0, 0, 24]
   );
 
   // Quote fades in on open, fades out as box expands, fades back in as box shrinks
-  const quoteOp = useTransform(smooth, [0.53, 0.59, 0.90, 0.96], [1, 0, 0, 1]);
+  const quoteOp = useTransform(scrollYProgress, [0.53, 0.59, 0.90, 0.96], [1, 0, 0, 1]);
 
   // Content fades in after full expansion, fades out before shrinking
-  const contentOp = useTransform(smooth, [0.63, 0.68, 0.84, 0.88], [0, 1, 1, 0]);
-  const contentY = useTransform(smooth, [0.63, 0.68, 0.84, 0.88], [20, 0, 0, -20]);
+  const contentOp = useTransform(scrollYProgress, [0.63, 0.68, 0.84, 0.88], [0, 1, 1, 0]);
+  const contentY = useTransform(scrollYProgress, [0.63, 0.68, 0.84, 0.88], [20, 0, 0, -20]);
 
   return (
     <div
@@ -140,7 +144,13 @@ export const TransitionBridge = () => {
       ref={containerRef}
       style={{ height: "600vh", position: "relative", width: "100vw", marginLeft: "calc(-50vw + 50%)" }}
     >
-      <div style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden", backgroundColor: "#000000" }}>
+      {/* ⚡ contain:strict prevents this sticky section from triggering
+          ancestor layout recalculations during scroll */}
+      <div style={{
+        position: "sticky", top: 0, height: "100vh",
+        overflow: "hidden", backgroundColor: "#000000",
+        contain: "layout style",
+      }}>
 
         {/* ── LAYER A: Black background + white line ── */}
         <div className="absolute inset-0 bg-[#000000] pointer-events-none">
@@ -160,9 +170,16 @@ export const TransitionBridge = () => {
         </div>
 
         {/* ── LAYER B: Expanding / Closing White Box ── */}
+        {/* ⚡ Uses scale() + borderRadius instead of clip-path for compositor-only animation */}
         <motion.div
           className="absolute inset-0 bg-white overflow-hidden"
-          style={{ opacity: boxOp, clipPath: boxClip, pointerEvents: "none" }}
+          style={{
+            opacity: boxOp,
+            scale: boxScale,
+            borderRadius: boxRadius,
+            pointerEvents: "none",
+            transformOrigin: "center center",
+          }}
         >
           {/* Quote (visible when box is small) */}
           <motion.div
@@ -172,7 +189,7 @@ export const TransitionBridge = () => {
             <div className="max-w-xl text-center">
               <p className="font-black text-3xl md:text-4xl uppercase tracking-tighter text-black leading-tight mb-4"
                 style={{ fontFamily: "'Outfit', 'Inter', sans-serif" }}>
-                "FIRST, SOLVE THE PROBLEM. THEN, WRITE THE CODE."
+                &quot;FIRST, SOLVE THE PROBLEM. THEN, WRITE THE CODE.&quot;
               </p>
               <div className="w-12 h-1 bg-black mx-auto mb-3" />
               <p className="text-xs font-bold tracking-widest text-neutral-600 uppercase">
