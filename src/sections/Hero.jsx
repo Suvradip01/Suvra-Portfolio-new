@@ -14,28 +14,31 @@ const Hero = () => {
   const videoRef = useRef(null);
   const [isInView, setIsInView] = useState(true);
 
-  // ⚡ Perf: Pause video and freeze Three.js Canvas loop when Hero is off-screen
+  // ⚡ Perf: The Hero section is inside a sticky container so it never physically
+  // leaves the viewport — IntersectionObserver always reported it as "visible".
+  // This meant Three.js canvas ran at frameloop="always" even when About section
+  // was fully covering the Hero (pure wasted GPU). Replace with a scroll-position
+  // check: when scrollY > 90% of viewport height, About has slid fully over Hero.
   useEffect(() => {
-    const el = heroRef.current;
-    if (!el) return;
+    const COVER_THRESHOLD = 0.9; // About covers Hero at ~1 viewport scroll
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        const visible = entry.isIntersecting;
-        setIsInView(visible);
-        if (videoRef.current) {
-          if (visible) {
-            videoRef.current.play().catch(() => {});
-          } else {
-            videoRef.current.pause();
-          }
+    const handleScroll = () => {
+      const covered = window.scrollY > window.innerHeight * COVER_THRESHOLD;
+      const visible = !covered;
+      setIsInView(visible);
+      if (videoRef.current) {
+        if (visible) {
+          videoRef.current.play().catch(() => {});
+        } else {
+          videoRef.current.pause();
         }
-      },
-      { threshold: 0 }
-    );
+      }
+    };
 
-    observer.observe(el);
-    return () => observer.disconnect();
+    // Initial check (page may load already scrolled)
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   //  Delay loading 3D Canvas on mobile (to prevent lag during first paint)

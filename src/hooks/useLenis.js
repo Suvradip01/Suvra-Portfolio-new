@@ -14,11 +14,16 @@ export const useLenis = () => {
     if (isTouchDevice) return;
 
     const lenis = new Lenis({
-      lerp: 0.045,           // 🧈 Butter glide: lower lerp creates extended, ultra-silky coasting momentum
+      // ⚡ Perf: raised lerp from 0.045 → 0.08. The ultra-low 0.045 created a
+      // 300-500ms momentum tail per scroll tick. During that window, if the About
+      // section began mounting (18 drag cards + clock RAF + Leaflet map), the GPU
+      // had to handle Lenis animation + mount work simultaneously → stutter.
+      // 0.08 still feels smooth & buttery but settles ~2x faster, eliminating overlap.
+      lerp: 0.08,
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
-      wheelMultiplier: 1.15, // Silky travel per wheel step without jarring jumps
+      wheelMultiplier: 1.1,  // Slightly reduced to complement the faster lerp
       infinite: false,
       autoRaf: true,         // Native RAF loop synchronized with monitor refresh rate
     });

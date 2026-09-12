@@ -26,7 +26,11 @@ const About = () => {
           observer.disconnect();
         }
       },
-      { threshold: 0.05, rootMargin: "100px" }
+      // ⚡ PERF FIX: 600px rootMargin pre-mounts all 18 Framer Motion drag cards
+      // well before the user reaches the section. Previously "100px" caused all 18
+      // components to mount simultaneously DURING active scroll, causing a main-thread
+      // spike. Now they mount quietly in the background while the user is still on Hero.
+      { threshold: 0.05, rootMargin: "600px" }
     );
     observer.observe(el);
     return () => observer.disconnect();

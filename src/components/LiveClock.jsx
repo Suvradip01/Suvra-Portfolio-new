@@ -14,28 +14,42 @@ export function LiveClock({ className = "", svgClassName = "" }) {
 
     let animationFrameId;
     let isVisible = true;
+    // ⚡ Perf: throttle clock RAF to ~30fps (every 33ms).
+    // The previous implementation ran at full 60fps calling new Date() + 3×
+    // setAttribute() DOM writes every frame — completely unnecessary for a clock.
+    // At 30fps the second hand still sweeps smoothly and we halve the DOM write budget.
+    const CLOCK_INTERVAL = 1000 / 30; // ~33ms
+    let lastClockTime = 0;
 
-    const updateClock = () => {
-      if (!isVisible) return;
-
-      const now = new Date();
-      const hours = now.getHours();
-      const minutes = now.getMinutes();
-      const seconds = now.getSeconds();
-      const milliseconds = now.getMilliseconds();
-
-      const hourAngle = ((hours % 12) + minutes / 60 + seconds / 3600) * 30;
-      const minuteAngle = (minutes + seconds / 60 + milliseconds / 60000) * 6;
-      const secondAngle = (seconds + milliseconds / 1000) * 6;
-
-      if (hourHandRef.current) {
-        hourHandRef.current.setAttribute("transform", `rotate(${hourAngle})`);
+    const updateClock = (timestamp) => {
+      if (!isVisible) {
+        // Don't reschedule when invisible — observer restarts it on re-entry
+        return;
       }
-      if (minuteHandRef.current) {
-        minuteHandRef.current.setAttribute("transform", `rotate(${minuteAngle})`);
-      }
-      if (secondHandRef.current) {
-        secondHandRef.current.setAttribute("transform", `rotate(${secondAngle})`);
+
+      // Only do DOM work if enough time has elapsed since last update
+      if (timestamp - lastClockTime >= CLOCK_INTERVAL) {
+        lastClockTime = timestamp;
+
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        const seconds = now.getSeconds();
+        const milliseconds = now.getMilliseconds();
+
+        const hourAngle = ((hours % 12) + minutes / 60 + seconds / 3600) * 30;
+        const minuteAngle = (minutes + seconds / 60 + milliseconds / 60000) * 6;
+        const secondAngle = (seconds + milliseconds / 1000) * 6;
+
+        if (hourHandRef.current) {
+          hourHandRef.current.setAttribute("transform", `rotate(${hourAngle})`);
+        }
+        if (minuteHandRef.current) {
+          minuteHandRef.current.setAttribute("transform", `rotate(${minuteAngle})`);
+        }
+        if (secondHandRef.current) {
+          secondHandRef.current.setAttribute("transform", `rotate(${secondAngle})`);
+        }
       }
 
       animationFrameId = requestAnimationFrame(updateClock);
@@ -46,6 +60,7 @@ export function LiveClock({ className = "", svgClassName = "" }) {
         const wasVisible = isVisible;
         isVisible = entry.isIntersecting;
         if (!wasVisible && isVisible) {
+          lastClockTime = 0; // reset throttle so first frame paints immediately
           animationFrameId = requestAnimationFrame(updateClock);
         }
       },
